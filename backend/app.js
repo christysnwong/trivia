@@ -7,8 +7,9 @@ const { NotFoundError } = require("./expressError");
 
 const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
-const quizzesRoutes = require("./routes/quizzes");
 const usersRoutes = require("./routes/users");
+const quizzesRoutes = require("./routes/quizzes");
+const globalScoresRoutes = require("./routes/globalscores");
 
 const app = express();
 
@@ -20,8 +21,10 @@ app.use(authenticateJWT);
 
 // routes
 app.use("/auth", authRoutes);
-app.use("/quizzes", quizzesRoutes);
 app.use("/users", usersRoutes);
+app.use("/quizzes", quizzesRoutes);
+app.use("/globalscores", globalScoresRoutes);
+
 
 
 

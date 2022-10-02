@@ -2,10 +2,8 @@
 
 /** Routes for quizzes */
 
-const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
 const axios = require("axios");
 
 const router = new express.Router();
@@ -26,10 +24,10 @@ router.get("/", async function (req, res, next) {
         });
 
         let results = resp.data.results.map( q => {
-            let regex = /&#039;|&quot;/g;
-            q.question = q.question.replaceAll(regex, "'");
-            q.correct_answer = q.correct_answer.replace(regex, "'");
-            q.incorrect_answers = q.incorrect_answers.map(ans => ans.replace(regex, "'"));
+            // let regex = /&#039;|&quot;/g;
+            // q.question = q.question.replaceAll(regex, "'");
+            // q.correct_answer = q.correct_answer.replace(regex, "'");
+            // q.incorrect_answers = q.incorrect_answers.map(ans => ans.replace(regex, "'"));
 
             const shuffle = (array) => {
               let counter = array.length;
