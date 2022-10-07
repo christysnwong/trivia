@@ -1,6 +1,6 @@
 "use strict";
 
-/** Routes for global scores */
+/** Routes for leaderboard scores */
 
 const express = require("express");
 const { ensureLoggedIn } = require("../middleware/auth");
@@ -9,7 +9,7 @@ const User = require("../models/user");
 const router = new express.Router();
 
 
-/** GET /  => { topGlobalScores: [{ category, difficulty, score, points, date }...]}
+/** GET /,  => { topLeaderboardScores: [{ category, difficulty, score, points, date }...]}
  *
  * Get user's highest score in specified category and difficulty
  * if queries are unspecified, get all user's highest score in each category / difficulty
@@ -24,17 +24,20 @@ router.get(
 
       let { category, difficulty } = req.query;
       
-      // category = decodeURIComponent(category);
 
-      const topGlobalScores = await User.getGlobalScores(category, difficulty);
-      return res.json({ topGlobalScores });
+
+      const topLeaderboardScores = await User.getLeaderboardScores(
+        category,
+        difficulty
+      );
+      return res.json({ topLeaderboardScores });
     } catch (err) {
       return next(err);
     }
   }
 );
 
-/** POST /  data => { updated: { category, difficulty, score, points, date } }
+/** POST /,  data => { updated: { category, difficulty, score, points, date } }
  *
  * Data includes userId, category, difficulty, score, points
  * Update user's score in a specified category and difficulty
@@ -47,8 +50,14 @@ router.post(
   ensureLoggedIn,
   async function (req, res, next) {
     try {
-      const newGlobalScore = await User.updateGlobalScore(req.body);
-      return res.json({ updated: newGlobalScore });
+      const newLeaderboardScore = await User.updateLeaderboardScore(req.body);
+      
+      if (newLeaderboardScore.category_id) {
+        return res.json({ updated: newLeaderboardScore });
+      } else {
+        return res.json(newLeaderboardScore);
+      }
+
     } catch (err) {
       return next(err);
     }

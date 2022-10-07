@@ -229,16 +229,25 @@ class User {
    **/
 
   static async getAllFolders(username) {
-    const result = await db.query(
+    const result1 = await db.query(
       `SELECT fo.id AS "folderId", fo.name 
         FROM folders fo JOIN users u ON fo.user_id = u.id
-        WHERE u.username = $1`,
-      [username]
+        WHERE u.username = $1 AND fo.name = $2`,
+      [username, "All"]
     );
 
-    const userFolders = result.rows;
+    const result2 = await db.query(
+      `SELECT fo.id AS "folderId", fo.name 
+        FROM folders fo JOIN users u ON fo.user_id = u.id
+        WHERE u.username = $1 AND fo.name != $2
+        ORDER BY fo.name`,
+      [username, "All"]
+    );
 
-    return userFolders;
+    const userAllFolder = result1.rows[0];
+    const userFolders = result2.rows;
+
+    return [userAllFolder, ...userFolders];
   }
 
   /** Given a folder's name, create a folder and return folder's info
@@ -280,6 +289,17 @@ class User {
    **/
 
   static async getFolderTrivia(folderId) {
+    const folderCheck = await db.query(
+      `SELECT name
+           FROM folders
+           WHERE id = $1`,
+      [folderId]
+    );
+
+    if (!folderCheck.rows[0]) {
+      throw new NotFoundError(`No such folder ${folderId}`);
+    }
+
     const result = await db.query(
       `SELECT t.id AS "triviaId", t.question, t.answer, t.folder_id AS "folderId", fo.name AS "folderName"
       FROM trivia t JOIN folders fo ON t.folder_id = fo.id
@@ -287,18 +307,24 @@ class User {
       [folderId]
     );
 
-    if (!result.rows[0]) {
-      throw new NotFoundError(`No such folder ${folderId}`);
+    let folder;
+
+    if (result.rows[0]) {
+      const { folderName } = result.rows[0];
+      const trivia = result.rows.map((f) => ({
+        id: f.triviaId,
+        question: f.question,
+        answer: f.answer,
+      }));
+
+      folder = { folderId: +folderId, folderName, trivia };
+    } else {
+      folder = {
+        folderId: +folderId,
+        folderName: folderCheck.rows[0].name,
+        trivia: [],
+      };
     }
-
-    const { folderName } = result.rows[0];
-    const trivia = result.rows.map((f) => ({
-      id: f.id,
-      question: f.question,
-      answer: f.answer,
-    }));
-
-    const folder = { folderId, folderName, trivia };
 
     return folder;
   }
@@ -310,7 +336,18 @@ class User {
    * Throws NotFoundError if folder not found.
    **/
 
-  static async renameFolder(folderId, newFolderName) {
+  static async renameFolder(folderId, { userId, newFolderName }) {
+    const duplicateCheck = await db.query(
+      `SELECT name
+           FROM folders
+           WHERE user_id = $1 AND name = $2`,
+      [userId, newFolderName]
+    );
+
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Duplicate folder name: ${newFolderName}`);
+    }
+
     const result = await db.query(
       `UPDATE folders SET name = '${newFolderName}'
       WHERE id = $1
@@ -453,10 +490,15 @@ class User {
       throw new NotFoundError(`No such trivia with id ${triviaId}`);
     }
 
+    console.log("====folderName", folderName);
+
     const folderCheck = await db.query(
       `SELECT id AS "folderId" from folders WHERE name = $1`,
       [folderName]
     );
+
+    console.log("====folderCheck", folderCheck);
+    console.log("====folderCheck.rows[0]", folderCheck.rows[0]);
 
     const { folderId } = folderCheck.rows[0];
 
@@ -502,9 +544,42 @@ class User {
 
   /** STATS ========================================================================================== */
 
+  static calRemainingPts(points) {
+    let remainingPts;
+    let levelPts;
+
+    if (points >= 0 && points <= 1000) {
+      remainingPts = 200 - (points % 200);
+      levelPts = 200;
+    } else if (points > 1000 && points <= 2000) {
+      remainingPts = 200 - ((points - 1000) % 200);
+      levelPts = 200;
+    } else if (points > 2000 && points <= 3500) {
+      remainingPts = 300 - ((points - 2000) % 300);
+      levelPts = 300;
+    } else if (points > 3500 && points <= 5000) {
+      remainingPts = 300 - ((points - 3500) % 300);
+      levelPts = 300;
+    } else if (points > 5000 && points <= 7500) {
+      remainingPts = 500 - ((points - 5000) % 500);
+      levelPts = 500;
+    } else if (points > 7500 && points <= 10000) {
+      remainingPts = 500 - ((points - 7500) % 500);
+      levelPts = 500;
+    } else if (points > 10000 && points <= 12500) {
+      remainingPts = 500 - ((points - 10000) % 500);
+      levelPts = 500;
+    } else if (points > 12500) {
+      remainingPts = 500 - ((points - 12500) % 500);
+      levelPts = 500;
+    }
+
+    return { remainingPts, levelPts };
+  }
+
   /** Given a username, return user's stats info
    *
-   * Returns { userId, username, level, points, quizzesCompleted }
+   * Returns { userId, username, level, points, quizzesCompleted, remainingPts, levelPts }
    *
    * Throws NotFoundError if user is not found.
    **/
@@ -514,7 +589,7 @@ class User {
       `SELECT u.id AS "userId", 
               level,
               title,
-              quizzes_completed AS "quizzes Completed",
+              quizzes_completed AS "quizzes completed",
               points
            FROM stats s JOIN users u ON s.id = u.id
            WHERE username = $1`,
@@ -525,57 +600,131 @@ class User {
 
     if (!userStats) throw new NotFoundError(`No user: ${username}`);
 
+    let { remainingPts, levelPts } = this.calRemainingPts(userStats.points);
+    userStats.remainingPts = remainingPts;
+    userStats.levelPts = levelPts;
+
     return userStats;
   }
 
   /** Given a username and new points, updates user's stats info
    *
-   * Returns { userId, level, title, points, quizzesCompleted }
+   * Returns { userId, level, title, points, quizzesCompleted, remainingPts, levelPts }
    *
    * Throws NotFoundError if user not found.
    **/
 
-  static async updatePoints(username, newPoints) {
+  static async updatePoints(userId, newPoints) {
     const currStats = await db.query(
-      `SELECT u.id AS "userId", level, title, points, quizzes_completed
-          FROM stats s JOIN users u ON s.id = u.id
-          WHERE username = $1`,
-      [username]
-    );
+      `SELECT level, title, points, quizzes_completed
+        FROM stats
+        WHERE id = $1`,
+        [userId]
+    )
 
     if (!currStats.rows[0]) throw new NotFoundError(`No user: ${username}`);
 
-    let { userId, level, title, points, quizzes_completed } = currStats.rows[0];
+    let { level, title, points, quizzes_completed } = currStats.rows[0];
 
     points += newPoints;
     quizzes_completed++;
 
     if (points > 0 && points <= 1000) {
       level = 1 + Math.floor(points / 200);
-      title = "Apprentice";
+      title = "Newbie";
     } else if (points > 1000 && points <= 2000) {
-      level = 5 + Math.floor(points / 200);
-      title = "Rookie";
+      level = 5 + Math.floor((points - 1000) / 200);
+      title = "Apprentice";
     } else if (points > 2000 && points <= 3500) {
-      level = 10 + Math.floor(points / 300);
+      level = 10 + Math.floor((points - 2000) / 300);
       title = "Pro";
     } else if (points > 3500 && points <= 5000) {
-      level = 15 + Math.floor(points / 300);
+      level = 15 + Math.floor((points - 3500) / 300);
       title = "Ace";
     } else if (points > 5000 && points <= 7500) {
-      level = 20 + Math.floor(points / 500);
-      title = "Superstar";
+      level = 20 + Math.floor((points - 5000) / 500);
+      title = "Premier";
     } else if (points > 7500 && points <= 10000) {
-      level = 25 + Math.floor(points / 500);
+      level = 25 + Math.floor((points - 7500) / 500);
+      title = "Superstar";
+    } else if (points > 10000 && points <= 12500) {
+      level = 30 + Math.floor((points - 10000) / 500);
       title = "Guru";
+    } else if (points > 12500) {
+      level = 35 + Math.floor((points - 12500) / 500);
+      title = "King";
     }
 
     const result = await db.query(
       `UPDATE stats
         SET level = $1, title = $2, points = $3, quizzes_completed = $4
         WHERE id = $5
-        RETURNING id AS "userId", level, title, points, quizzes_completed`,
+        RETURNING id AS "userId", level, title, points, quizzes_completed AS "quizzes completed"`,
       [level, title, points, quizzes_completed, userId]
+    );
+
+    const userStats = result.rows[0];
+
+    let { remainingPts, levelPts } = this.calRemainingPts(userStats.points);
+    userStats.remainingPts = remainingPts;
+    userStats.levelPts = levelPts;
+
+    return result.rows[0];
+  }
+
+  /** Given a username, return user's list of badges
+   *
+   * Returns [{ badgeName, badgeUrl, date }...]
+   *
+   * Throws NotFoundError if user is not found.
+   **/
+
+  static async getBadges(username) {
+    const result = await db.query(
+      `SELECT b.badge_name AS "badgeName", b.badge_url AS "badgeUrl", b.date
+        FROM badges b JOIN users u ON b.user_id = u.id
+        WHERE u.username = $1
+        ORDER BY date desc`,
+      [username]
+    );
+
+    if (!result.rows[0]) return [];
+
+    const formattedBadgeInfo = result.rows.map((b) => ({
+      badgeName: b.badgeName,
+      badgeUrl: b.badgeUrl,
+      date: moment(b.date).format("MMM Do YYYY, h:mma"),
+    }));
+
+    return formattedBadgeInfo;
+  }
+
+  /** Given a user id and badge name, add a badge to user's account
+   *
+   * Returns { badgeName, badgeUrl, date }
+   *
+   **/
+
+  static async postBadge({ userId, badge }) {
+    const duplicateBadgeCheck = await db.query(
+      `SELECT user_id, badge_name 
+        FROM badges
+        WHERE user_id = $1 AND badge_name = $2`,
+      [userId, badge]
+    );
+
+    if (duplicateBadgeCheck.rows[0]) {
+      return "The user has already earned this badge.";
+    }
+
+    const currTime = new Date();
+
+    const result = await db.query(
+      `INSERT INTO badges
+        (user_id, badge_name, badge_url, date)
+        VALUES ($1, $2, $3, $4) 
+        RETURNING badge_name AS "badgeName", badge_url AS "badgeUrl", date`,
+      [userId, badge, `/badges/${badge.toLowerCase()}.gif`, currTime]
     );
 
     return result.rows[0];
@@ -592,7 +741,6 @@ class User {
    **/
 
   static async getScores(username, category, difficulty) {
-
     let query = `SELECT c.name AS "category", d.difficulty, score, points, date 
           FROM personal_best p JOIN categories c ON p.category_id = c.id JOIN users u ON p.user_id = u.id
           JOIN difficulties d ON p.difficulty_type = d.type `;
@@ -616,7 +764,7 @@ class User {
 
     query += whereExp + orderByExp;
 
-    const result = await db.query(query, queryVals);  
+    const result = await db.query(query, queryVals);
 
     // if no score data
     if (!result.rows[0]) return 0;
@@ -710,23 +858,23 @@ class User {
     return result.rows[0];
   }
 
-  /** Get top global scores in each category
-   * If category and difficulty are provided, this will return top global score in the specified fields
+  /** Get top leaderboard scores in each category
+   * If category and difficulty are provided, this will return top score in the specified fields
    *
    * Returns [{ category, difficulty, score, points, date }...]
    *
    **/
 
-  static async getGlobalScores(category, difficulty) {
+  static async getLeaderboardScores(category, difficulty) {
     let query = `SELECT c.name AS "category", d.difficulty, u.username, score, points, date 
-          FROM global_scores g 
-          JOIN categories c ON g.category_id = c.id 
-          JOIN difficulties d ON g.difficulty_type = d.type
-          JOIN users u ON g.user_id = u.id `;
+          FROM leaderboard l 
+          JOIN categories c ON l.category_id = c.id 
+          JOIN difficulties d ON l.difficulty_type = d.type
+          JOIN users u ON l.user_id = u.id `;
 
     let count = 0;
     let whereExp = "";
-    let orderByExp = "ORDER BY c.name, g.difficulty_type";
+    let orderByExp = "ORDER BY c.name, l.difficulty_type";
     let queryVals = [];
 
     if (category) {
@@ -748,9 +896,9 @@ class User {
     // if no score data
     if (!result.rows[0]) return 0;
 
-    const topGlobalScores = result.rows;
+    const topScores = result.rows;
 
-    const formattedTopGlobalScores = topGlobalScores.map((s) => ({
+    const formattedTopScores = topScores.map((s) => ({
       category: s.category,
       difficulty: s.difficulty,
       username: s.username,
@@ -759,7 +907,7 @@ class User {
       date: moment(s.date).format("MMM Do YYYY, h:mma"),
     }));
 
-    return formattedTopGlobalScores;
+    return formattedTopScores;
   }
 
   /** Given a user id, category, difficulty, score and points, update user's score
@@ -770,7 +918,7 @@ class User {
    * Throws NotFoundError if the category or difficulty is not found.
    **/
 
-  static async updateGlobalScore({
+  static async updateLeaderboardScore({
     userId,
     category,
     difficulty,
@@ -798,7 +946,7 @@ class User {
 
     const pointsCheck = await db.query(
       `SELECT points
-          FROM global_scores
+          FROM leaderboard
           WHERE category_id = $1 AND difficulty_type = $2`,
       [categoryId, difficultyType]
     );
@@ -818,7 +966,7 @@ class User {
 
     if (!oldPoints) {
       result = await db.query(
-        `INSERT INTO global_scores
+        `INSERT INTO leaderboard
            (category_id,
             difficulty_type,
             user_id,
@@ -831,7 +979,7 @@ class User {
       );
     } else if (oldPoints < points) {
       result = await db.query(
-        `UPDATE global_scores
+        `UPDATE leaderboard
           SET score = $1, points = $2, date = $3, user_id = $4
           WHERE category_id = $5 and difficulty_type = $6
           RETURNING category_id, difficulty_type, user_id, score, points, date`,
@@ -853,19 +1001,24 @@ class User {
    * Throws NotFoundError if the user is not found.
    **/
 
-  static async getSessions(username) {
-    const result = await db.query(
-      `SELECT p.id, c.name AS "category", d.difficulty, p.score, p.points, p.date
+  static async getSessions(username, limit) {
+    let query = `SELECT p.id, c.name AS "category", d.difficulty, p.score, p.points, p.date
           FROM played_sessions p 
           JOIN users u ON p.user_id = u.id
           JOIN categories c ON p.category_id = c.id 
           JOIN difficulties d ON p.difficulty_type = d.type
           WHERE username = $1
-          ORDER BY p.date DESC`,
-      [username]
-    );
+          ORDER BY p.date DESC`;
 
-    if (!result.rows[0]) throw new NotFoundError(`No user: ${username}`);
+    let queryVals = [username];
+
+    if (limit) {
+      query += ` LIMIT ${limit}`;
+    }
+
+    const result = await db.query(query, queryVals);
+
+    if (!result.rows[0]) return [];
 
     const userSessions = result.rows;
 
@@ -889,7 +1042,22 @@ class User {
    * Also checks stored sessions in database to see if it exceeds the session storage limit per user
    **/
 
-  static async addSession({ userId, category, difficulty, score, points }) {
+  static async addSession({
+    sessionId,
+    userId,
+    category,
+    difficulty,
+    score,
+    points,
+  }) {
+    const sessionCheck = await db.query(
+      `SELECT session_id from played_sessions
+        WHERE session_id = $1`,
+      [sessionId]
+    );
+
+    if (sessionCheck.rows[0]) throw new BadRequestError(`Duplicate session`);
+
     const catCheck = await db.query(
       `SELECT id FROM categories WHERE name = $1`,
       [category]
@@ -900,7 +1068,7 @@ class User {
     if (!categoryId) throw new NotFoundError(`No such category ${category}`);
 
     const diffCheck = await db.query(
-      `SELECT type FROM difficulties WHERE difficulty= $1`,
+      `SELECT type FROM difficulties WHERE difficulty = $1`,
       [difficulty]
     );
 
@@ -913,17 +1081,19 @@ class User {
 
     const result = await db.query(
       `INSERT INTO played_sessions
-           (category_id,
+           (user_id,
+            session_id,
+            category_id,
             difficulty_type,
-            user_id,
             score,
             points,
             date)
-           VALUES ($1, $2, $3, $4, $5, $6)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
            RETURNING id, category_id, difficulty_type, score, points, date`,
-      [categoryId, difficultyType, userId, score, points, currTime]
+      [userId, sessionId, categoryId, difficultyType, score, points, currTime]
     );
 
+    await this.updatePoints(userId, points);
     await this.checkSessionLimit(userId);
 
     return result.rows[0];
@@ -937,7 +1107,7 @@ class User {
    **/
 
   static async checkSessionLimit(userId) {
-    const SESSIONLIMIT = 10;
+    const SESSIONLIMIT = 15;
 
     const result = await db.query(
       `SELECT id, date

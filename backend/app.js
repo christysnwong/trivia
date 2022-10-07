@@ -9,7 +9,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 const quizzesRoutes = require("./routes/quizzes");
-const globalScoresRoutes = require("./routes/globalscores");
+const leaderboardRoutes = require("./routes/leaderboard");
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/quizzes", quizzesRoutes);
-app.use("/globalscores", globalScoresRoutes);
+app.use("/leaderboard", leaderboardRoutes);
 
 
 

@@ -15,8 +15,15 @@ CREATE TABLE stats (
     id INTEGER REFERENCES users ON DELETE CASCADE,
     level INTEGER DEFAULT 1,
     title TEXT DEFAULT 'Newbie',
-    points INTEGER DEFAULT 450,
+    points INTEGER DEFAULT 0,
     quizzes_completed INTEGER DEFAULT 0
+);
+
+CREATE TABLE badges (
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  badge_name TEXT NOT NULL,
+  badge_url TEXT NOT NULL,
+  date TIMESTAMP without time zone NOT NULL
 );
 
 CREATE TABLE categories (
@@ -31,6 +38,7 @@ CREATE TABLE difficulties (
 
 CREATE TABLE played_sessions (
     id SERIAL PRIMARY KEY,
+    session_id TEXT NOT NULL,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     category_id INTEGER REFERENCES categories(id),
     difficulty_type INTEGER REFERENCES difficulties(type),
@@ -59,7 +67,7 @@ CREATE TABLE personal_best (
 );
 
 
-CREATE TABLE global_scores (
+CREATE TABLE leaderboard (
     category_id INTEGER REFERENCES categories(id),
     difficulty_type INTEGER REFERENCES difficulties(type),
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -72,7 +80,7 @@ CREATE TABLE global_scores (
 CREATE TABLE folders (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, 
-  name TEXT NOT NULL
+  name VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE trivia (

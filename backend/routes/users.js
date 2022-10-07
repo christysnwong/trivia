@@ -3,18 +3,22 @@
 /** Routes for users. */
 
 const jsonschema = require("jsonschema");
+const { validate: uuidValidate } = require("uuid");
 
 const express = require("express");
 const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
+
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const userCreateFolderSchema = require("../schemas/userCreateFolder.json");
+const userRenameFolderSchema = require("../schemas/userRenameFolder.json");
 
 const router = express.Router();
 
-/** POST / { user }  => { user, token }
+/** POST /, { user }  => { user, token }
  *
  * Adds a new user. This is not the registration endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be an
@@ -42,7 +46,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
   }
 });
 
-/** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
+/** GET /, => { users: [ {username, firstName, lastName, email }, ... ] }
  *
  * Returns list of all users.
  *
@@ -58,7 +62,7 @@ router.get("/", ensureAdmin, async function (req, res, next) {
   }
 });
 
-/** GET /[username] => { user }
+/** GET /[username], => { user }
  *
  * Returns { username, firstName, lastName, isAdmin, jobs }
  *   where jobs is { id, title, companyHandle, companyName, state }
@@ -79,7 +83,7 @@ router.get(
   }
 );
 
-/** PATCH /[username] { user } => { user }
+/** PATCH /[username], { user } => { user }
  *
  * Data can include:
  *   { firstName, lastName, password, email }
@@ -108,7 +112,7 @@ router.patch(
   }
 );
 
-/** DELETE /[username]  =>  { deleted: username }
+/** DELETE /[username],  =>  { deleted: username }
  *
  * Authorization required: admin or same-user-as-:username
  **/
@@ -128,7 +132,7 @@ router.delete(
 
 /** FOLDERS ========================================================================================== */
 
-/** GET /[username]/folders => { folders: [{folderId, name} ...] }
+/** GET /[username]/folders, => { folders: [{folderId, name} ...] }
  *
  * Get all folders for that user
  * Authorization required: admin or same-user-as-:username
@@ -148,7 +152,7 @@ router.get(
   }
 );
 
-/** POST /[username]/folders folderName => { created: { folderId, name} }
+/** POST /[username]/folders, folderName => { created: { folderId, name} }
  *
  * Create a new folder for the user
  * Authorization required: admin or same-user-as-:username
@@ -160,6 +164,12 @@ router.post(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
+      const validator = jsonschema.validate(req.body, userCreateFolderSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const folder = await User.createFolder(req.body);
       return res.json({ created: folder });
     } catch (err) {
@@ -168,7 +178,7 @@ router.post(
   }
 );
 
-/** GET /[username]/folders/[folderId] => { folder: {folderId, folderName, trivia} }
+/** GET /[username]/folders/[folderId], => { folder: {folderId, folderName, trivia} }
  * where trivia is [{ id, question, answer, folderId, folderName}, ... ]
  *
  * Get a user's favourited trivia in this folder
@@ -190,7 +200,7 @@ router.get(
   }
 );
 
-/** PATCH /[username]/folders/[folderId] newFolderName => { updated: {folderId, name} }
+/** PATCH /[username]/folders/[folderId], newFolderName => { updated: {folderId, name} }
  *
  * Rename a user's folder
  * Data includes new folder name
@@ -203,9 +213,17 @@ router.patch(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
+
+      const validator = jsonschema.validate(req.body, userRenameFolderSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
+
       const folder = await User.renameFolder(
         req.params.folderId,
-        req.body.newFolderName
+        req.body
       );
 
       return res.json({ updated: folder });
@@ -215,7 +233,7 @@ router.patch(
   }
 );
 
-/** DELETE /[username]/folders/[folderId]  =>  { deleted: {folderId, name} }
+/** DELETE /[username]/folders/[folderId],  =>  { deleted: {folderId, name} }
  *
  * Delete a user's folder
  * Authorization required: admin or same-user-as-:username
@@ -237,9 +255,9 @@ router.delete(
 
 /** FAV TRIVIAS ======================================================================================= */
 
-/** GET /[username]/fav/ => { trivia: [{ id, question, answer, folderId } ... }
+/** GET /[username]/fav, => { trivia: [{ id, question, answer, folderId } ... }
  *
- * Get a username, return this user's all favourited trivia
+ * Given a username, return this user's all favourited trivia
  * Authorization required: admin or same-user-as-:username
  *
  **/
@@ -257,7 +275,7 @@ router.get(
   }
 );
 
-/** POST /[username]/fav {trivia} => { trivia: { id, userId, question, answer, folderId } }
+/** POST /[username]/fav, data => { trivia: { id, userId, question, answer, folderId } }
  *
  * Add a trivia to favourite
  * Trivia data includes user id, question, answer, folder name
@@ -278,7 +296,7 @@ router.post(
   }
 );
 
-/** GET /[username]/fav/[triviaId] => { trivia: { id, userId, question, answer, folderId } }
+/** GET /[username]/fav/[triviaId], => { trivia: { id, userId, question, answer, folderId } }
  *
  * Get a trivia's info
  * Authorization required: admin or same-user-as-:username
@@ -298,7 +316,7 @@ router.get(
   }
 );
 
-/** PATCH /[username]/fav/[triviaId] folderName => { trivia: { id, userId, question, answer, folderId } }
+/** PATCH /[username]/fav/[triviaId], folderName => { trivia: { id, userId, question, answer, folderId } }
  *
  * Data includes new folder name
  * Move a trivia to another folder
@@ -310,19 +328,20 @@ router.patch(
   "/:username/fav/:triviaId",
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
+    console.log("req.body CHECK", req.body);
     try {
       const trivia = await User.moveTrivia(
         req.params.triviaId,
         req.body.folderName
       );
-      return res.json({ trivia });
+      return res.json({ updated: trivia });
     } catch (err) {
       return next(err);
     }
   }
 );
 
-/** DELETE /[username]/fav/[triviaId]  => { deleted: { triviaId } }
+/** DELETE /[username]/fav/[triviaId], => { deleted: { triviaId } }
  *
  * Remove a trivia from favourites
  * Authorization required: admin or same-user-as-:username
@@ -344,7 +363,7 @@ router.delete(
 
 /** STATS ========================================================================================== */
 
-/** GET /[username]/stats => { stats: { userId, username, level, points, quizzesCompleted }}
+/** GET /[username]/stats, => { stats: { userId, level, title, points, quizzesCompleted, remainingPts }}
  *
  * Get user's stats
  * Authorization required: admin or same-user-as-:username
@@ -364,10 +383,10 @@ router.get(
   }
 );
 
-/** POST /[username]/stats new points => { stats: { userId, username, level, points, quizzesCompleted }}
+/** POST /[username]/stats, newPoints => { stats: { userId, level, title, points, quizzesCompleted, remainingPts,  }}
  *
  * Update user's stats
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin ONLY
  *
  **/
 
@@ -377,7 +396,7 @@ router.post(
   async function (req, res, next) {
     try {
       const stats = await User.updatePoints(
-        req.params.username,
+        req.body.userId,
         req.body.newPoints
       );
       return res.json({ updated: stats });
@@ -387,9 +406,54 @@ router.post(
   }
 );
 
+/** GET /[username]/badges, => { badges: [{ badgeName, badgeUrl, date }...]  }
+ *
+ * Get user's list of badges
+ * Authorization required: admin or same-user-as-:username
+ *
+ **/
+
+router.get(
+  "/:username/badges",
+  ensureCorrectUserOrAdmin,
+  async function (req, res, next) {
+    try {
+      const badges = await User.getBadges(req.params.username);
+      return res.json({ badges });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+/** POST /[username]/badges, badge => { added: { badgeName, badgeUrl, date } }
+ *
+ * Add a badge to user's accounts
+ * Authorization required: admin or same-user-as-:username
+ *
+ **/
+
+router.post(
+  "/:username/badges",
+  ensureCorrectUserOrAdmin,
+  async function (req, res, next) {
+    try {
+      const badge = await User.postBadge(req.body);
+      if (badge.badgeName) {
+        return res.json({ added: badge });
+      } else {
+        return res.json(badge)
+      }
+
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
 /** SCORES ========================================================================================== */
 
-/** GET /[username]/scores  => { topScores: [{ category, difficulty, score, points, date }...]}
+/** GET /[username]/scores, query => { topScores: [{ category, difficulty, score, points, date }...]}
  *
  * Get user's personal best score in specified category and difficulty
  * If queries are unspecified, get all user's highest score in each category / difficulty
@@ -413,7 +477,7 @@ router.get(
   }
 );
 
-/** POST /[username]/scores  data => { updated: { category, difficulty, score, points, date } }
+/** POST /[username]/scores, data => { updated: { category, difficulty, score, points, date } }
  *
  * Data includes userId, category, difficulty, score, points
  * Update user's score in a specified category and difficulty
@@ -437,7 +501,7 @@ router.post(
 
 /** SESSIONS ========================================================================================= */
 
-/** GET /[username]/sessions  => { sessions: [{ id, category, difficulty, score, points, date }...}
+/** GET /[username]/sessions, query => { sessions: [{ id, category, difficulty, score, points, date }...}
  *
  * Get user's played session 
  * Authorization required: admin or same-user-as-:username
@@ -449,7 +513,7 @@ router.get(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
-      const sessions = await User.getSessions(req.params.username);
+      const sessions = await User.getSessions(req.params.username, req.query.limit);
       return res.json({ sessions });
     } catch (err) {
       return next(err);
@@ -457,7 +521,7 @@ router.get(
   }
 );
 
-/** POST /[username]/sessions  data => { added: { id, category_id, difficulty_type, score, points, date }}
+/** POST /[username]/sessions, data => { added: { id, category_id, difficulty_type, score, points, date }}
  *
  * Data includes userId, category, difficulty, score, points
  * Add user's played session 
@@ -469,7 +533,11 @@ router.post(
   "/:username/sessions",
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
+
     try {
+      let uuidCheck = uuidValidate(req.body.sessionId);
+      if (!uuidCheck) throw BadRequestError(`This is an invalid session.`);
+
       const newSession = await User.addSession(req.body);
       return res.json({ added: newSession });
     } catch (err) {
@@ -478,7 +546,7 @@ router.post(
   }
 );
 
-/** DELETE /[username]/sessions  sessionId => 
+/** DELETE /[username]/sessions, sessionId => 
  * { deleted: { id, category_id, difficulty_type, score, points, date }}
  *
  * Delete a user's played session 
@@ -499,7 +567,7 @@ router.delete(
   }
 );
 
-/** GET /[username]/playedCounts  => { playedCounts: [{ userId, category, difficulty, played }...}
+/** GET /[username]/playedCounts, query => { playedCounts: [{ userId, category, difficulty, played }...}
  *
  * Get user's played counts in specified category and difficulty
  * If queries are unspecified, get all user's played counts in each category / difficulty
@@ -527,7 +595,7 @@ router.get(
   }
 );
 
-/** POST /[username]/playedCounts data => { updated: { userId, category, difficulty, played }}
+/** POST /[username]/playedcounts, data => { updated: { userId, category, difficulty, played }}
  *
  * Data includes user id, category and difficulty
  * Add user's played counts in specified category and difficulty
