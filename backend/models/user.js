@@ -229,6 +229,8 @@ class User {
    **/
 
   static async getAllFolders(username) {
+    // Get folder 'All' first before fetching others so that folder 'All' will be at first
+    // followed by others in order by their names
     const result1 = await db.query(
       `SELECT fo.id AS "folderId", fo.name 
         FROM folders fo JOIN users u ON fo.user_id = u.id
@@ -340,8 +342,8 @@ class User {
     const duplicateCheck = await db.query(
       `SELECT name
            FROM folders
-           WHERE user_id = $1 AND name = $2`,
-      [userId, newFolderName]
+           WHERE user_id = $1 AND name = $2 AND id != $3`,
+      [userId, newFolderName, folderId]
     );
 
     if (duplicateCheck.rows[0]) {
@@ -372,6 +374,20 @@ class User {
    **/
 
   static async removeFolder(folderId) {
+    const checkFolder = await db.query(
+      `SELECT name FROM folders 
+        WHERE id = $1`, 
+        [folderId]
+    );
+
+    if (!checkFolder.rows[0]) {
+      throw new NotFoundError(`No such folder ${folderId}`);
+    }
+
+    if (checkFolder.rows[0].name === "All") {
+      throw new BadRequestError(`Folder 'All' cannot be deleted.`); 
+    }
+
     const result = await db.query(
       `DELETE FROM folders 
         WHERE id = $1
@@ -380,10 +396,6 @@ class User {
     );
 
     const removedFolder = result.rows[0];
-
-    if (!removedFolder) {
-      throw new NotFoundError(`No such folder ${folderId}`);
-    }
 
     return removedFolder;
   }
@@ -429,13 +441,11 @@ class User {
       [userId, folderName]
     );
 
-    const { folderId } = folderCheck.rows[0];
-
-    if (!folderId) {
-      throw new NotFoundError(
-        `No such user ${username} or folder ${folderName}`
-      );
+    if (!folderCheck.rows[0]) {
+      throw new NotFoundError(`No such user id ${userId} or folder ${folderName}`);
     }
+      
+    const { folderId } = folderCheck.rows[0];
 
     const result = await db.query(
       `INSERT INTO trivia 
@@ -490,21 +500,16 @@ class User {
       throw new NotFoundError(`No such trivia with id ${triviaId}`);
     }
 
-    console.log("====folderName", folderName);
-
     const folderCheck = await db.query(
       `SELECT id AS "folderId" from folders WHERE name = $1`,
       [folderName]
     );
 
-    console.log("====folderCheck", folderCheck);
-    console.log("====folderCheck.rows[0]", folderCheck.rows[0]);
-
-    const { folderId } = folderCheck.rows[0];
-
-    if (!folderId) {
+    if (!folderCheck.rows[0]) {
       throw new NotFoundError(`No such folder ${folderName}`);
     }
+
+    const { folderId } = folderCheck.rows[0];
 
     const result = await db.query(
       `UPDATE trivia SET folder_id = $1
@@ -622,7 +627,7 @@ class User {
         [userId]
     )
 
-    if (!currStats.rows[0]) throw new NotFoundError(`No user: ${username}`);
+    if (!currStats.rows[0]) throw new NotFoundError(`No user with id: ${userId}`);
 
     let { level, title, points, quizzes_completed } = currStats.rows[0];
 
@@ -630,7 +635,7 @@ class User {
     quizzes_completed++;
 
     if (points > 0 && points <= 1000) {
-      level = 1 + Math.floor(points / 200);
+      level = 0 + Math.floor(points / 200);
       title = "Newbie";
     } else if (points > 1000 && points <= 2000) {
       level = 5 + Math.floor((points - 1000) / 200);
@@ -680,6 +685,15 @@ class User {
    **/
 
   static async getBadges(username) {
+    const userCheck = await db.query(
+      `SELECT username FROM users 
+        WHERE username = $1`, 
+        [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No user with username: ${username}`);
+
     const result = await db.query(
       `SELECT b.badge_name AS "badgeName", b.badge_url AS "badgeUrl", b.date
         FROM badges b JOIN users u ON b.user_id = u.id
@@ -706,6 +720,14 @@ class User {
    **/
 
   static async postBadge({ userId, badge }) {
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE id = $1`,
+        [userId]
+    );
+
+    if (!userCheck.rows[0]) throw new NotFoundError(`No such user with id: ${userId}`);
+
     const duplicateBadgeCheck = await db.query(
       `SELECT user_id, badge_name 
         FROM badges
@@ -796,19 +818,19 @@ class User {
       [category]
     );
 
+    if (!catCheck.rows[0]) throw new NotFoundError(`No such category ${category}`);
+    
     const { id: categoryId } = catCheck.rows[0];
-
-    if (!categoryId) throw new NotFoundError(`No such category ${category}`);
 
     const diffCheck = await db.query(
       `SELECT type FROM difficulties WHERE difficulty= $1`,
       [difficulty]
     );
 
+    if (!diffCheck.rows[0]) throw new NotFoundError(`No such difficulty ${difficulty}`);
+
     const { type: difficultyType } = diffCheck.rows[0];
 
-    if (!difficultyType)
-      throw new NotFoundError(`No such difficulty ${difficulty}`);
 
     const pointsCheck = await db.query(
       `SELECT points
@@ -816,6 +838,8 @@ class User {
           WHERE user_id = $1 AND category_id = $2 AND difficulty_type = $3`,
       [userId, categoryId, difficultyType]
     );
+
+    if (!pointsCheck.rows[0]) throw new NotFoundError(`No such user with id: ${userId}`);
 
     let oldPoints;
 
@@ -843,7 +867,7 @@ class User {
            RETURNING category_id, difficulty_type, score, points, date`,
         [categoryId, difficultyType, userId, score, points, currTime]
       );
-    } else if (oldPoints < points) {
+    } else if (oldPoints && points >= oldPoints) {
       result = await db.query(
         `UPDATE personal_best
           SET score = $1, points = $2, date = $3
@@ -930,19 +954,28 @@ class User {
       [category]
     );
 
-    const { id: categoryId } = catCheck.rows[0];
+    if (!catCheck.rows[0])
+      throw new NotFoundError(`No such category ${category}`);
 
-    if (!categoryId) throw new NotFoundError(`No such category ${category}`);
+    const { id: categoryId } = catCheck.rows[0];
 
     const diffCheck = await db.query(
       `SELECT type FROM difficulties WHERE difficulty= $1`,
       [difficulty]
     );
 
+    if (!diffCheck.rows[0])
+      throw new NotFoundError(`No such difficulty ${difficulty}`);
+
     const { type: difficultyType } = diffCheck.rows[0];
 
-    if (!difficultyType)
-      throw new NotFoundError(`No such difficulty ${difficulty}`);
+    const userCheck = await db.query(
+      `SELECT id FROM users
+        where id = $1`, [userId]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with id: ${userId}`);
 
     const pointsCheck = await db.query(
       `SELECT points
@@ -950,6 +983,8 @@ class User {
           WHERE category_id = $1 AND difficulty_type = $2`,
       [categoryId, difficultyType]
     );
+
+    
 
     let oldPoints;
 
@@ -964,7 +999,7 @@ class User {
 
     let result;
 
-    if (!oldPoints) {
+    if (!oldPoints && points > 80) {
       result = await db.query(
         `INSERT INTO leaderboard
            (category_id,
@@ -974,10 +1009,10 @@ class User {
             points,
             date)
            VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING category_id, difficulty_type, score, points, date`,
+           RETURNING category_id, difficulty_type, user_id, score, points, date`,
         [categoryId, difficultyType, userId, score, points, currTime]
       );
-    } else if (oldPoints < points) {
+    } else if (oldPoints && points >= oldPoints) {
       result = await db.query(
         `UPDATE leaderboard
           SET score = $1, points = $2, date = $3, user_id = $4
@@ -1002,7 +1037,16 @@ class User {
    **/
 
   static async getSessions(username, limit) {
-    let query = `SELECT p.id, c.name AS "category", d.difficulty, p.score, p.points, p.date
+    const userCheck = await db.query(
+      `SELECT username FROM users 
+        WHERE username = $1`,
+      [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No user with username: ${username}`);
+
+    let query = `SELECT p.session_id, c.name AS "category", d.difficulty, p.score, p.points, p.date
           FROM played_sessions p 
           JOIN users u ON p.user_id = u.id
           JOIN categories c ON p.category_id = c.id 
@@ -1023,7 +1067,7 @@ class User {
     const userSessions = result.rows;
 
     const formattedUserSessions = userSessions.map((userSession) => ({
-      id: userSession.id,
+      sessionId: userSession.session_id,
       category: userSession.category,
       difficulty: userSession.difficulty,
       score: userSession.score,
@@ -1050,6 +1094,15 @@ class User {
     score,
     points,
   }) {
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE id = $1`,
+      [userId]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No user with id: ${userId}`);
+    
     const sessionCheck = await db.query(
       `SELECT session_id from played_sessions
         WHERE session_id = $1`,
@@ -1063,19 +1116,20 @@ class User {
       [category]
     );
 
+    if (!catCheck.rows[0]) throw new NotFoundError(`No such category ${category}`);
+    
     const { id: categoryId } = catCheck.rows[0];
 
-    if (!categoryId) throw new NotFoundError(`No such category ${category}`);
 
     const diffCheck = await db.query(
       `SELECT type FROM difficulties WHERE difficulty = $1`,
       [difficulty]
     );
 
-    const { type: difficultyType } = diffCheck.rows[0];
+    if (!diffCheck.rows[0]) throw new NotFoundError(`No such difficulty ${difficulty}`);
+    
+      const { type: difficultyType } = diffCheck.rows[0];
 
-    if (!difficultyType)
-      throw new NotFoundError(`No such difficulty ${difficulty}`);
 
     const currTime = new Date();
 
@@ -1089,7 +1143,7 @@ class User {
             points,
             date)
            VALUES ($1, $2, $3, $4, $5, $6, $7)
-           RETURNING id, category_id, difficulty_type, score, points, date`,
+           RETURNING session_id, category_id, difficulty_type, score, points, date`,
       [userId, sessionId, categoryId, difficultyType, score, points, currTime]
     );
 
@@ -1130,12 +1184,12 @@ class User {
    *
    **/
 
-  static async deleteSession(sessionId) {
+  static async deleteSession(id) {
     const result = await db.query(
       `DELETE FROM played_sessions 
         WHERE id = $1
-        RETURNING id, user_id, category_id, difficulty_type, score, points, date`,
-      [sessionId]
+        RETURNING id, session_id, user_id, category_id, difficulty_type, score, points, date`,
+      [id]
     );
 
     return result.rows[0];
@@ -1149,7 +1203,16 @@ class User {
    **/
 
   static async getPlayedCounts(username, category, difficulty) {
-    let query = `SELECT user_id AS "userId", c.name AS "category", d.difficulty, played 
+    const userCheck = await db.query(
+      `SELECT username FROM users 
+        WHERE username = $1`,
+      [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No user with username: ${username}`);
+
+    let query = `SELECT c.name AS "category", d.difficulty, played 
           FROM played_counts p JOIN categories c ON p.category_id = c.id JOIN users u ON p.user_id = u.id
           JOIN difficulties d ON p.difficulty_type = d.type `;
 
@@ -1166,7 +1229,7 @@ class User {
 
     if (difficulty) {
       count++;
-      whereExp += `AND d.difficulty = $${count}`;
+      whereExp += `AND d.difficulty = $${count} `;
       queryVals.push(difficulty);
     }
 
@@ -1177,7 +1240,11 @@ class User {
     const playedCounts = result.rows;
 
     if (!playedCounts[0])
-      throw new NotFoundError(`No user or played history for user ${username}`);
+      return {
+        category,
+        difficulty,
+        played: 0,
+      };
 
     return playedCounts;
   }
@@ -1200,19 +1267,20 @@ class User {
       [category]
     );
 
+    if (!catCheck.rows[0]) throw new NotFoundError(`No such category ${category}`);
+    
     const { id: categoryId } = catCheck.rows[0];
 
-    if (!categoryId) throw new NotFoundError(`No such category ${category}`);
 
     const diffCheck = await db.query(
       `SELECT type FROM difficulties WHERE difficulty= $1`,
       [difficulty]
     );
 
+    if (!diffCheck.rows[0]) throw new NotFoundError(`No such difficulty ${difficulty}`);
+
     const { type: difficultyType } = diffCheck.rows[0];
 
-    if (!difficultyType)
-      throw new NotFoundError(`No such difficulty ${difficulty}`);
 
     const playedNumsCheck = await db.query(
       `SELECT played
@@ -1242,7 +1310,7 @@ class User {
             difficulty_type,
             played)
            VALUES ($1, $2, $3, $4)
-           RETURNING user_id, category_id, difficulty_type, played`,
+           RETURNING category_id, difficulty_type, played`,
         [userId, categoryId, difficultyType, playedCounts]
       );
     } else {
@@ -1251,7 +1319,7 @@ class User {
         `UPDATE played_counts
           SET played = $1
           WHERE user_id = $2 and category_id = $3 and difficulty_type = $4
-          RETURNING user_id, category_id, difficulty_type, played`,
+          RETURNING category_id, difficulty_type, played`,
         [playedCounts, userId, categoryId, difficultyType]
       );
     }

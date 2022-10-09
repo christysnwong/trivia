@@ -13,7 +13,7 @@ CREATE TABLE stats (
     -- id SERIAL PRIMARY KEY,
     -- user_id INTEGER REFERENCES users ON DELETE CASCADE,
     id INTEGER REFERENCES users ON DELETE CASCADE,
-    level INTEGER DEFAULT 1,
+    level INTEGER DEFAULT 0,
     title TEXT DEFAULT 'Newbie',
     points INTEGER DEFAULT 0,
     quizzes_completed INTEGER DEFAULT 0
@@ -42,7 +42,7 @@ CREATE TABLE played_sessions (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     category_id INTEGER REFERENCES categories(id),
     difficulty_type INTEGER REFERENCES difficulties(type),
-    score TEXT NOT NULL,
+    score INTEGER NOT NULL,
     points INTEGER NOT NULL,
     date TIMESTAMP without time zone NOT NULL
 );
