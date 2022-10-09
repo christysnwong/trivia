@@ -1033,7 +1033,7 @@ describe("getSessions", function () {
     const sessions = await User.getSessions("u1");
     expect(sessions).toEqual([
       {
-        sessionId: "02d25fe5-ac33-4da8-8089-24d4600eb19c",
+        id: 9,
         category: "Entertainment: Books",
         difficulty: "easy",
         score: 6,
@@ -1041,7 +1041,7 @@ describe("getSessions", function () {
         date: "Sep 10th 2022, 1:35pm",
       },
       {
-        sessionId: "1031be27-511d-4ad4-bbe4-f9e4c3d3022b",
+        id: 8,
         category: "General Knowledge",
         difficulty: "easy",
         score: 7,
@@ -1049,7 +1049,7 @@ describe("getSessions", function () {
         date: "Sep 10th 2022, 1:26pm",
       },
       {
-        sessionId: "4a3ee8fd-9410-479b-be30-21c5c7c9f4c9",
+        id: 7,
         category: "General Knowledge",
         difficulty: "easy",
         score: 7,
@@ -1057,7 +1057,7 @@ describe("getSessions", function () {
         date: "Sep 8th 2022, 1:25pm",
       },
       {
-        sessionId: "662e15c7-45c5-453f-adba-a1fc36e8e631",
+        id: 6,
         category: "General Knowledge",
         difficulty: "easy",
         score: 6,
@@ -1065,7 +1065,7 @@ describe("getSessions", function () {
         date: "Sep 8th 2022, 1:20pm",
       },
       {
-        sessionId: "3748d1d8-e402-4bd1-bcf8-c75c9e7e2b40",
+        id: 5,
         category: "General Knowledge",
         difficulty: "medium",
         score: 5,
@@ -1073,7 +1073,7 @@ describe("getSessions", function () {
         date: "Sep 8th 2022, 1:10pm",
       },
       {
-        sessionId: "d6560c4a-c272-4928-bc82-4454cb71646e",
+        id: 4,
         category: "General Knowledge",
         difficulty: "medium",
         score: 5,
@@ -1081,7 +1081,7 @@ describe("getSessions", function () {
         date: "Sep 8th 2022, 1:06pm",
       },
       {
-        sessionId: "38f4f33f-2ccb-4261-b102-aa7a73f76961",
+        id: 3,
         category: "General Knowledge",
         difficulty: "easy",
         score: 6,
@@ -1089,7 +1089,7 @@ describe("getSessions", function () {
         date: "Sep 8th 2022, 1:05pm",
       },
       {
-        sessionId: "3e1da446-5fff-403f-8285-bdd95eddcb18",
+        id: 2,
         category: "General Knowledge",
         difficulty: "easy",
         score: 6,
@@ -1097,7 +1097,7 @@ describe("getSessions", function () {
         date: "Sep 8th 2022, 1:01pm",
       },
       {
-        sessionId: "9ea32c73-2956-474d-8300-49bcee9d15c5",
+        id: 1,
         category: "General Knowledge",
         difficulty: "easy",
         score: 6,
@@ -1111,7 +1111,7 @@ describe("getSessions", function () {
     const sessions = await User.getSessions("u1", 3);
     expect(sessions).toEqual([
       {
-        sessionId: "02d25fe5-ac33-4da8-8089-24d4600eb19c",
+        id: 9,
         category: "Entertainment: Books",
         difficulty: "easy",
         score: 6,
@@ -1119,7 +1119,7 @@ describe("getSessions", function () {
         date: "Sep 10th 2022, 1:35pm",
       },
       {
-        sessionId: "1031be27-511d-4ad4-bbe4-f9e4c3d3022b",
+        id: 8,
         category: "General Knowledge",
         difficulty: "easy",
         score: 7,
@@ -1127,7 +1127,7 @@ describe("getSessions", function () {
         date: "Sep 10th 2022, 1:26pm",
       },
       {
-        sessionId: "4a3ee8fd-9410-479b-be30-21c5c7c9f4c9",
+        id: 7,
         category: "General Knowledge",
         difficulty: "easy",
         score: 7,

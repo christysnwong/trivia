@@ -1046,7 +1046,7 @@ class User {
     if (!userCheck.rows[0])
       throw new NotFoundError(`No user with username: ${username}`);
 
-    let query = `SELECT c.name AS "category", d.difficulty, p.score, p.points, p.date
+    let query = `SELECT p.id, c.name AS "category", d.difficulty, p.score, p.points, p.date
           FROM played_sessions p 
           JOIN users u ON p.user_id = u.id
           JOIN categories c ON p.category_id = c.id 
@@ -1067,7 +1067,7 @@ class User {
     const userSessions = result.rows;
 
     const formattedUserSessions = userSessions.map((userSession) => ({
-      sessionId: userSession.session_id,
+      id: userSession.id,
       category: userSession.category,
       difficulty: userSession.difficulty,
       score: userSession.score,
