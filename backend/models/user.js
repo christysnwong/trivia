@@ -831,6 +831,14 @@ class User {
 
     const { type: difficultyType } = diffCheck.rows[0];
 
+    const userCheck = await db.query(
+      `SELECT id FROM users
+        where id = $1`,
+      [userId]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with id: ${userId}`);
 
     const pointsCheck = await db.query(
       `SELECT points
@@ -838,8 +846,6 @@ class User {
           WHERE user_id = $1 AND category_id = $2 AND difficulty_type = $3`,
       [userId, categoryId, difficultyType]
     );
-
-    if (!pointsCheck.rows[0]) throw new NotFoundError(`No such user with id: ${userId}`);
 
     let oldPoints;
 

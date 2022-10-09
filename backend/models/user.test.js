@@ -725,7 +725,7 @@ describe("getScores", function () {
         category: "General Knowledge",
         difficulty: "medium",
         score: 5,
-        points: 80,
+        points: 85,
         date: "Sep 8th 2022, 1:10pm",
       },
     ]);
@@ -745,7 +745,7 @@ describe("getScores", function () {
         category: "General Knowledge",
         difficulty: "medium",
         score: 5,
-        points: 80,
+        points: 85,
         date: "Sep 8th 2022, 1:10pm",
       }
     ]);
@@ -875,7 +875,7 @@ describe("getLeaderboardScores", function () {
         difficulty: "medium",
         username: "u1",
         score: 5,
-        points: 80,
+        points: 85,
         date: "Sep 8th 2022, 1:10pm",
       },
     ]);
@@ -897,7 +897,7 @@ describe("getLeaderboardScores", function () {
         difficulty: "medium",
         username: "u1",
         score: 5,
-        points: 80,
+        points: 85,
         date: "Sep 8th 2022, 1:10pm",
       },
     ]);
@@ -1069,7 +1069,7 @@ describe("getSessions", function () {
         category: "General Knowledge",
         difficulty: "medium",
         score: 5,
-        points: 80,
+        points: 85,
         date: "Sep 8th 2022, 1:10pm",
       },
       {

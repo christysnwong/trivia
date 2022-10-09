@@ -22,12 +22,12 @@ async function commonBeforeAll() {
         INSERT INTO categories (name)
         VALUES ('General Knowledge'),
                ('Entertainment: Books')
-    `);
+  `);
 
   await db.query(`
         INSERT INTO difficulties (difficulty)
         VALUES ('easy'), ('medium'), ('hard')
-    `);
+  `);
 
   await db.query(`
         INSERT INTO users(username,
@@ -62,7 +62,7 @@ async function commonBeforeAll() {
             ('3e1da446-5fff-403f-8285-bdd95eddcb18', 1, 1, 1, 6, 100, '2022-09-08 13:01:07-07'),
             ('38f4f33f-2ccb-4261-b102-aa7a73f76961', 1, 1, 1, 6, 100, '2022-09-08 13:05:07-07'),
             ('d6560c4a-c272-4928-bc82-4454cb71646e', 1, 1, 2, 5, 80, '2022-09-08 13:06:07-07'),
-            ('3748d1d8-e402-4bd1-bcf8-c75c9e7e2b40', 1, 1, 2, 5, 80, '2022-09-08 13:10:07-07'),
+            ('3748d1d8-e402-4bd1-bcf8-c75c9e7e2b40', 1, 1, 2, 5, 85, '2022-09-08 13:10:07-07'),
             ('662e15c7-45c5-453f-adba-a1fc36e8e631', 1, 1, 1, 6, 100, '2022-09-08 13:20:07-07'),
             ('4a3ee8fd-9410-479b-be30-21c5c7c9f4c9', 1, 1, 1, 7, 120, '2022-09-08 13:25:07-07'),
             ('1031be27-511d-4ad4-bbe4-f9e4c3d3022b', 1, 1, 1, 7, 120, '2022-09-10 13:26:07-07'),
@@ -86,14 +86,14 @@ async function commonBeforeAll() {
 
   await db.query(`
     INSERT INTO personal_best (category_id, difficulty_type, user_id, score, points, date)
-    VALUES (1, 2, 1, 5, 80, '2022-09-08 13:10:07-07'),
+    VALUES (1, 2, 1, 5, 85, '2022-09-08 13:10:07-07'),
            (1, 1, 1, 7, 120, '2022-09-10 13:26:07-07'),
            (2, 1, 1, 6, 75, '2022-09-10 13:35:07-07')
   `);
 
   await db.query(`
     INSERT INTO leaderboard (category_id, difficulty_type, user_id, score, points, date)
-    VALUES (1, 2, 1, 5, 80, '2022-09-08 13:10:07-07'),
+    VALUES (1, 2, 1, 5, 85, '2022-09-08 13:10:07-07'),
            (1, 1, 1, 7, 120, '2022-09-10 13:26:07-07')
   `);
 
