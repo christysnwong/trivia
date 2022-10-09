@@ -1190,7 +1190,6 @@ describe("addSession", function () {
   test("works", async function () {
     const addedSession = await User.addSession(session);
     expect(addedSession).toEqual({
-      session_id: "02d25fe5-ac33-4da8-8089-24d4600eb11c",
       category_id: 1,
       difficulty_type: 1,
       score: 8,

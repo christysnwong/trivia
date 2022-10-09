@@ -1046,7 +1046,7 @@ class User {
     if (!userCheck.rows[0])
       throw new NotFoundError(`No user with username: ${username}`);
 
-    let query = `SELECT p.session_id, c.name AS "category", d.difficulty, p.score, p.points, p.date
+    let query = `SELECT c.name AS "category", d.difficulty, p.score, p.points, p.date
           FROM played_sessions p 
           JOIN users u ON p.user_id = u.id
           JOIN categories c ON p.category_id = c.id 
@@ -1143,7 +1143,7 @@ class User {
             points,
             date)
            VALUES ($1, $2, $3, $4, $5, $6, $7)
-           RETURNING session_id, category_id, difficulty_type, score, points, date`,
+           RETURNING category_id, difficulty_type, score, points, date`,
       [userId, sessionId, categoryId, difficultyType, score, points, currTime]
     );
 
