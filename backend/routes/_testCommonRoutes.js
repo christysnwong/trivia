@@ -50,7 +50,7 @@ async function commonBeforeAll() {
   await User.addSession({
     sessionId: "3748d1d8-e402-4bd1-bcf8-c75c9e7e2b40",
     userId: 1,
-    category: "General Knwoledge",
+    category: "General Knowledge",
     difficulty: "medium",
     score: 5,
     points: 85,
@@ -59,7 +59,7 @@ async function commonBeforeAll() {
   await User.addSession({
     sessionId: "1031be27-511d-4ad4-bbe4-f9e4c3d3022b",
     userId: 1,
-    category: "General Knwoledge",
+    category: "General Knowledge",
     difficulty: "easy",
     score: 7,
     points: 120,
