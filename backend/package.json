@@ -22,6 +22,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "nock": "^13.2.9",
     "supertest": "^6.2.4"
   }
 }

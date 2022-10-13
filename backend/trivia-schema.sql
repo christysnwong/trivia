@@ -10,8 +10,6 @@ CREATE TABLE users (
 );
 
 CREATE TABLE stats (
-    -- id SERIAL PRIMARY KEY,
-    -- user_id INTEGER REFERENCES users ON DELETE CASCADE,
     id INTEGER REFERENCES users ON DELETE CASCADE,
     level INTEGER DEFAULT 0,
     title TEXT DEFAULT 'Newbie',
@@ -23,7 +21,8 @@ CREATE TABLE badges (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   badge_name TEXT NOT NULL,
   badge_url TEXT NOT NULL,
-  date TIMESTAMP without time zone NOT NULL
+  date TIMESTAMP without time zone NOT NULL,
+  PRIMARY KEY (user_id, badge_name)
 );
 
 CREATE TABLE categories (

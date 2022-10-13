@@ -26,6 +26,14 @@ describe("POST /auth/token", function () {
     });
     expect(resp.body).toEqual({
       token: expect.any(String),
+      user: {
+        id: 1,
+        username: "u1",
+        firstName: "u1F",
+        lastName: "u1L",
+        email: "u1@email.com",
+        isAdmin: false
+      },
     });
   });
 
@@ -65,17 +73,27 @@ describe("POST /auth/token", function () {
 
 
 describe("POST /auth/register", function () {
+  const newUser = {
+    username: "new",
+    firstName: "first",
+    lastName: "last",
+    password: "password",
+    email: "new@email.com",
+  };
+
   test("works for anon", async function () {
-    const resp = await request(app).post("/auth/register").send({
-      username: "new",
-      firstName: "first",
-      lastName: "last",
-      password: "password",
-      email: "new@email.com",
-    });
+    const resp = await request(app).post("/auth/register").send(newUser);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
       token: expect.any(String),
+      user: {
+        id: 3,
+        username: "new",
+        firstName: "first",
+        lastName: "last",
+        email: "new@email.com",
+        isAdmin: false,
+      },
     });
   });
 

@@ -19,7 +19,7 @@ function authenticateJWT(req, res, next) {
     const authHeader = req.headers && req.headers.authorization;
     if (authHeader) {
       const token = authHeader.replace(/^[Bb]earer /, "").trim();
-      console.log("CHECK TOKEN", token);
+      // console.log("CHECK TOKEN", token);
       res.locals.user = jwt.verify(token, SECRET_KEY);
     }
 
@@ -68,9 +68,8 @@ function ensureAdmin(req, res, next) {
 function ensureCorrectUserOrAdmin(req, res, next) {
   try {
     const user = res.locals.user;
-    // console.log("CHECK MIDDLEWARE");
+    // console.log("======== CHECK MIDDLEWARE");
     // console.log("USER", user);
-
 
     if (!(user && (user.isAdmin || user.username === req.params.username))) {
       throw new UnauthorizedError();

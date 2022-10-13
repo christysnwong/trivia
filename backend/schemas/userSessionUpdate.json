@@ -1,0 +1,42 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "required": [
+        "sessionId",
+        "userId",
+        "category",
+        "difficulty",
+        "score",
+        "points"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "sessionId": {
+            "type": "string"
+        },
+        "userId": {
+            "type": "integer"
+        },
+        "category": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "difficulty": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+        },
+        "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+        },
+        "points": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200
+        }
+    }
+}

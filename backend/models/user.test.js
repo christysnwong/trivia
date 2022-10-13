@@ -370,6 +370,17 @@ describe("renameFolder", function () {
       }
     });
 
+    test("not found if no such user", async function () {
+      try {
+        await User.renameFolder(100, {
+          userId: 99,
+          newFolderName: "xyz",
+        });
+      } catch (err) {
+        expect(err instanceof NotFoundError).toBeTruthy();
+      }
+    });
+
     test("not found if no such folder", async function () {
       try {
         await User.renameFolder(99, updateFolderName);
@@ -385,7 +396,7 @@ describe("renameFolder", function () {
 
 describe("removeFolder", function () {
   test("works", async function () {
-    const deletedFolder = await User.removeFolder(2);
+    const deletedFolder = await User.removeFolder("u1", 2);
     expect(deletedFolder).toEqual({
         folderId: 2,
         name: "Abc"
@@ -395,7 +406,7 @@ describe("removeFolder", function () {
 
   test("bad request for deleting user's All folder", async function () {
     try {
-      await User.removeFolder(1);
+      await User.removeFolder("u1", 1);
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -404,7 +415,7 @@ describe("removeFolder", function () {
 
   test("not found if no such folder", async function () {
     try {
-      await User.removeFolder(99);
+      await User.removeFolder("u99", 99);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -531,7 +542,7 @@ describe("getTrivia", function () {
 
 describe("moveTrivia", function () {
   test("works", async function () {
-    const movedTrivia = await User.moveTrivia(1, "Abc");
+    const movedTrivia = await User.moveTrivia(1, { userId: 1, folderName: "Abc" });
     expect(movedTrivia).toEqual({
       id: 1,
       user_id: 1,
@@ -564,7 +575,7 @@ describe("moveTrivia", function () {
 
 describe("removeTrivia", function () {
   test("works", async function () {
-    const removedTrivia = await User.removeTrivia(2);
+    const removedTrivia = await User.removeTrivia("u1", 2);
     expect(removedTrivia).toEqual({
       triviaId: 2
     });
@@ -572,7 +583,7 @@ describe("removeTrivia", function () {
 
   test("not found if no such trivia", async function () {
     try {
-      await User.removeTrivia(99);
+      await User.removeTrivia("u99", 99);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -673,9 +684,9 @@ describe("getBadges", function () {
 
 describe("postBadge", function () {
   test("works", async function () {
-    const badge = await User.postBadge({userId: 2, badge: "trophy"});
+    const badge = await User.postBadge({userId: 2, badge: "Trophy"});
     expect(badge).toEqual({
-      badgeName: "trophy",
+      badgeName: "Trophy",
       badgeUrl: "/badges/trophy.gif",
       date: badge.date
     });

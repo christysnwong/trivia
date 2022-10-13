@@ -2,9 +2,17 @@
 
 /** Routes for leaderboard scores */
 
+const jsonschema = require("jsonschema");
 const express = require("express");
 const { ensureLoggedIn } = require("../middleware/auth");
 const User = require("../models/user");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} = require("../expressError");
+
+const scoreUpdateSchema = require("../schemas/scoreUpdate.json");
 
 const router = new express.Router();
 
@@ -24,8 +32,6 @@ router.get(
 
       let { category, difficulty } = req.query;
       
-
-
       const topLeaderboardScores = await User.getLeaderboardScores(
         category,
         difficulty
@@ -50,6 +56,13 @@ router.post(
   ensureLoggedIn,
   async function (req, res, next) {
     try {
+
+      const validator = jsonschema.validate(req.body, scoreUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const newLeaderboardScore = await User.updateLeaderboardScore(req.body);
       
       if (newLeaderboardScore.category_id) {

@@ -74,7 +74,10 @@ async function commonBeforeAll() {
     points: 75,
   });
 
+  await User.postBadge({ userId: 1, badge: "Newbie" });
+
   await User.createFolder({ userId: 1, folderName: "Abc" });
+  await User.createFolder({ userId: 2, folderName: "Def" });
 
   await User.addToFav({
     userId: 1,
@@ -88,6 +91,13 @@ async function commonBeforeAll() {
     question: "U1 Question 1 in Abc",
     answer: "Answer 1",
     folderName: "Abc",
+  });
+
+  await User.addToFav({
+    userId: 2,
+    question: "U2 Question 1 in Def",
+    answer: "Answer 1",
+    folderName: "Def",
   });
 
   await User.updateScore({
@@ -129,6 +139,28 @@ async function commonBeforeAll() {
     score: 7,
     points: 120,
   });
+
+
+  await User.updatePlayedCounts({
+    userId: 1,
+    category: "General Knowledge",
+    difficulty: "medium",
+  });
+
+  await User.updatePlayedCounts({
+    userId: 1,
+    category: "General Knowledge",
+    difficulty: "easy",
+  });
+
+  await User.updatePlayedCounts({
+    userId: 1,
+    category: "Entertainment: Books",
+    difficulty: "easy",
+  });
+
+  
+
 }
 
 async function commonBeforeEach() {

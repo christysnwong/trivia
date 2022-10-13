@@ -229,6 +229,16 @@ class User {
    **/
 
   static async getAllFolders(username) {
+
+    const userCheck = await db.query(
+      `SELECT username FROM users 
+        WHERE username = $1`,
+      [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No user with username: ${username}`);
+
     // Get folder 'All' first before fetching others so that folder 'All' will be at first
     // followed by others in order by their names
     const result1 = await db.query(
@@ -260,6 +270,15 @@ class User {
    **/
 
   static async createFolder({ userId, folderName }) {
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE id = $1`,
+      [userId]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with id: ${userId}`);
+
     const duplicateCheck = await db.query(
       `SELECT name
            FROM folders
@@ -270,6 +289,8 @@ class User {
     if (duplicateCheck.rows[0]) {
       throw new BadRequestError(`Duplicate folder name: ${folderName}`);
     }
+
+
 
     const result = await db.query(
       `INSERT INTO folders (user_id, name)
@@ -339,6 +360,16 @@ class User {
    **/
 
   static async renameFolder(folderId, { userId, newFolderName }) {
+
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE id = $1`,
+      [userId]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with id: ${userId}`);
+
     const duplicateCheck = await db.query(
       `SELECT name
            FROM folders
@@ -348,6 +379,20 @@ class User {
 
     if (duplicateCheck.rows[0]) {
       throw new BadRequestError(`Duplicate folder name: ${newFolderName}`);
+    }
+
+    const checkFolder = await db.query(
+      `SELECT name FROM folders 
+        WHERE id = $1`,
+      [folderId]
+    );
+
+    if (!checkFolder.rows[0]) {
+      throw new NotFoundError(`No such folder ${folderId}`);
+    }
+
+    if (checkFolder.rows[0].name === "All") {
+      throw new BadRequestError(`Folder 'All' cannot be renamed.`);
     }
 
     const result = await db.query(
@@ -373,7 +418,17 @@ class User {
    * Throws NotFoundError if folder not found.
    **/
 
-  static async removeFolder(folderId) {
+  static async removeFolder(username, folderId) {
+
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE username = $1`,
+      [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with username: ${username}`);
+
     const checkFolder = await db.query(
       `SELECT name FROM folders 
         WHERE id = $1`, 
@@ -390,14 +445,12 @@ class User {
 
     const result = await db.query(
       `DELETE FROM folders 
-        WHERE id = $1
+        WHERE id = $1 AND user_id = $2
         RETURNING id AS "folderId", name`,
-      [folderId]
+      [folderId, userCheck.rows[0].id]
     );
 
-    const removedFolder = result.rows[0];
-
-    return removedFolder;
+    return result.rows[0];
   }
 
   /** FAV TRIVIAS ========================================================================================= */
@@ -491,7 +544,7 @@ class User {
    * Throws NotFoundError if trivia or folder is not found.
    **/
 
-  static async moveTrivia(triviaId, folderName) {
+  static async moveTrivia(triviaId, {userId, folderName}) {
     const triviaCheck = await db.query(`SELECT id FROM trivia WHERE id = $1`, [
       triviaId,
     ]);
@@ -501,8 +554,8 @@ class User {
     }
 
     const folderCheck = await db.query(
-      `SELECT id AS "folderId" from folders WHERE name = $1`,
-      [folderName]
+      `SELECT id AS "folderId" from folders WHERE name = $1 AND user_id = $2`,
+      [folderName, userId]
     );
 
     if (!folderCheck.rows[0]) {
@@ -530,12 +583,22 @@ class User {
    * Throws NotFoundError if trivia is not found.
    **/
 
-  static async removeTrivia(triviaId) {
+  static async removeTrivia(username, triviaId) {
+
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE username = $1`,
+      [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with username: ${username}`);
+
     const result = await db.query(
       `DELETE FROM trivia 
-        WHERE id = $1
+        WHERE id = $1 AND user_id = $2
         RETURNING id AS "triviaId"`,
-      [triviaId]
+      [triviaId, userCheck.rows[0].id]
     );
 
     const removedTrivia = result.rows[0];
@@ -720,6 +783,7 @@ class User {
    **/
 
   static async postBadge({ userId, badge }) {
+
     const userCheck = await db.query(
       `SELECT id FROM users 
         WHERE id = $1`,
@@ -763,6 +827,16 @@ class User {
    **/
 
   static async getScores(username, category, difficulty) {
+
+    const userCheck = await db.query(
+      `SELECT username FROM users 
+        WHERE username = $1`,
+      [username]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No user with username: ${username}`);
+
     let query = `SELECT c.name AS "category", d.difficulty, score, points, date 
           FROM personal_best p JOIN categories c ON p.category_id = c.id JOIN users u ON p.user_id = u.id
           JOIN difficulties d ON p.difficulty_type = d.type `;
@@ -1033,7 +1107,7 @@ class User {
     return result.rows[0];
   }
 
-  /** SESSIONS ========================================================================================= */
+  /** SESSIONS ======================================================================================== */
 
   /** Given a username, return user's played trivia sessions
    *
@@ -1198,6 +1272,8 @@ class User {
       [id]
     );
 
+    if (!result.rows[0]) throw new NotFoundError(`No session with id ${id}`);
+
     return result.rows[0];
   }
 
@@ -1268,6 +1344,16 @@ class User {
     difficulty,
     setPlayed = 1,
   }) {
+
+    const userCheck = await db.query(
+      `SELECT id FROM users 
+        WHERE id = $1`,
+      [userId]
+    );
+
+    if (!userCheck.rows[0])
+      throw new NotFoundError(`No such user with id: ${userId}`);
+      
     const catCheck = await db.query(
       `SELECT id FROM categories WHERE name = $1`,
       [category]

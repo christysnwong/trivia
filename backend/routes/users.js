@@ -6,7 +6,7 @@ const jsonschema = require("jsonschema");
 const { validate: uuidValidate } = require("uuid");
 
 const express = require("express");
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
+const { ensureCorrectUserOrAdmin, ensureAdmin, ensureLoggedIn } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
@@ -15,6 +15,14 @@ const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
 const userCreateFolderSchema = require("../schemas/userCreateFolder.json");
 const userRenameFolderSchema = require("../schemas/userRenameFolder.json");
+
+const scoreUpdateSchema = require("../schemas/scoreUpdate.json");
+const addFavSchema = require("../schemas/addFav.json");
+const moveFavSchema = require("../schemas/moveFav.json")
+const userStatUpdateSchema = require("../schemas/userStatUpdate.json");
+const userBadgeUpdateSchema = require("../schemas/userBadgeUpdate.json");
+const userSessionUpdateSchema = require("../schemas/userSessionUpdate.json");
+const userPlayedCountsUpdateSchema = require("../schemas/userPlayedCountsUpdate.json")
 
 const router = express.Router();
 
@@ -245,7 +253,9 @@ router.delete(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
-      const removedFolder = await User.removeFolder(req.params.folderId);
+      const removedFolder = await User.removeFolder(
+        req.params.username, req.params.folderId
+      );
       return res.json({ deleted: removedFolder });
     } catch (err) {
       return next(err);
@@ -288,6 +298,13 @@ router.post(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
+
+      const validator = jsonschema.validate(req.body, addFavSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const newTrivia = await User.addToFav(req.body);
       return res.json({ added: newTrivia });
     } catch (err) {
@@ -299,13 +316,13 @@ router.post(
 /** GET /[username]/fav/[triviaId], => { trivia: { id, userId, question, answer, folderId } }
  *
  * Get a trivia's info
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin
  *
  **/
 
 router.get(
   "/:username/fav/:triviaId",
-  ensureCorrectUserOrAdmin,
+  ensureAdmin,
   async function (req, res, next) {
     try {
       const trivia = await User.getTrivia(req.params.triviaId);
@@ -328,11 +345,17 @@ router.patch(
   "/:username/fav/:triviaId",
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
-    console.log("req.body CHECK", req.body);
     try {
+
+      const validator = jsonschema.validate(req.body, moveFavSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const trivia = await User.moveTrivia(
         req.params.triviaId,
-        req.body.folderName
+        req.body
       );
       return res.json({ updated: trivia });
     } catch (err) {
@@ -353,7 +376,7 @@ router.delete(
   async function (req, res, next) {
 
     try {
-      const deletedTrivia = await User.removeTrivia(req.params.triviaId);
+      const deletedTrivia = await User.removeTrivia(req.params.username, req.params.triviaId);
       return res.json({ deleted: deletedTrivia });
     } catch (err) {
       return next(err);
@@ -392,9 +415,16 @@ router.get(
 
 router.post(
   "/:username/stats",
-  ensureCorrectUserOrAdmin,
+  ensureAdmin,
   async function (req, res, next) {
+
     try {
+      const validator = jsonschema.validate(req.body, userStatUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const stats = await User.updatePoints(
         req.body.userId,
         req.body.newPoints
@@ -438,6 +468,13 @@ router.post(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
+
+      const validator = jsonschema.validate(req.body, userBadgeUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const badge = await User.postBadge(req.body);
       if (badge.badgeName) {
         return res.json({ added: badge });
@@ -466,10 +503,13 @@ router.get(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
-
       let { category, difficulty } = req.query;
 
-      const topScores = await User.getScores(req.params.username, category, difficulty);
+      const topScores = await User.getScores(
+        req.params.username,
+        category,
+        difficulty
+      );
       return res.json({ topScores });
     } catch (err) {
       return next(err);
@@ -490,6 +530,13 @@ router.post(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
+
+      const validator = jsonschema.validate(req.body, scoreUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const newScore = await User.updateScore(req.body);
       return res.json({ updated: newScore });
     } catch (err) {
@@ -535,8 +582,15 @@ router.post(
   async function (req, res, next) {
 
     try {
+
+      const validator = jsonschema.validate(req.body, userSessionUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       let uuidCheck = uuidValidate(req.body.sessionId);
-      if (!uuidCheck) throw BadRequestError(`This is an invalid session.`);
+      if (!uuidCheck) throw new BadRequestError(`This is an invalid session.`);
 
       const newSession = await User.addSession(req.body);
       return res.json({ added: newSession });
@@ -556,10 +610,10 @@ router.post(
 
 router.delete(
   "/:username/sessions",
-  ensureCorrectUserOrAdmin,
+  ensureAdmin,
   async function (req, res, next) {
     try {
-      const deletedSession = await User.deleteSession(req.body.sessionId);
+      const deletedSession = await User.deleteSession(req.body.id);
       return res.json({ deleted: deletedSession });
     } catch (err) {
       return next(err);
@@ -608,6 +662,13 @@ router.post(
   ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     try {
+
+      const validator = jsonschema.validate(req.body, userPlayedCountsUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(errs);
+      }
+
       const playedCounts = await User.updatePlayedCounts(req.body);
       return res.json({ updated: playedCounts });
     } catch (err) {
