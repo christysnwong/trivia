@@ -1,6 +1,11 @@
 // "use strict";
 
 
+beforeEach(() => {
+  jest.resetModules();
+});
+
+
 describe("config can come from env", function () {
   test("works", function () {
     process.env.SECRET_KEY = "abc";
@@ -13,25 +18,18 @@ describe("config can come from env", function () {
     expect(config.PORT).toEqual(5000);
     expect(config.BCRYPT_WORK_FACTOR).toEqual(12);
 
-    delete process.env.SECRET_KEY;
-    delete process.env.PORT;
-    delete process.env.BCRYPT_WORK_FACTOR;
-    delete process.env.DATABASE_URL;
-
     expect(config.DB_URI).toEqual("other");
   });
+
+  test("if node_env equals to test", () => {
+    process.env.NODE_ENV = "test";
+    expect(process.env.NODE_ENV).toEqual("test");
+
+    const config = require("./config");
+    expect(config.DB_URI).toEqual("postgresql:///trivia_test");
+  });
+
 });
 
-
-// describe("config can come from env 2", function () {
-//   test("should be in test environment", function () {
-//     process.env.NODE_ENV = "test";
-
-//     const config = require("./config");
-//     console.log("====== NODE_ENV", process.env.NODE_ENV);
-//     console.log("====== DB_URI", config.DB_URI);
-//     expect(config.DB_URI).toEqual("postgresql:///trivia_test");
-//   });
-// });
 
 
