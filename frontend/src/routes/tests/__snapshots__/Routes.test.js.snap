@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="pt-5"
+  >
+    <div
+      class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4"
+    >
+      <div
+        class="text-center shadow-1-strong rounded mb-2 logo-bg"
+      >
+        <div
+          class="p-4 w-100 mask-bg"
+        >
+          <h5
+            class="mb-3"
+          >
+            Welcome back to 
+          </h5>
+          <h1
+            class="display-4 brand"
+          >
+            Trivia Guru
+          </h1>
+          <hr
+            class="mb-2"
+          />
+          <p
+            class="lead fw-bold"
+          >
+            Test your knowledge and learn more everyday!
+          </p>
+        </div>
+      </div>
+      <div
+        class="row mb-5"
+      >
+        <div
+          class="col-12"
+        >
+          <h3
+            class="mb-3 mt-3"
+          >
+            <i
+              class="fa-solid fa-id-badge me-2"
+            />
+            Recent Activities
+          </h3>
+        </div>
+        <div
+          class="col-8"
+        >
+          <p>
+            Hi testuser! You are currently a 
+            <b>
+              Level 14 Pro
+            </b>
+            .
+            <br />
+          </p>
+          <p>
+            You are 60 points away from the next level.
+          </p>
+          <div
+            class="progress"
+          >
+            <div
+              aria-valuemax="300"
+              aria-valuemin="0"
+              aria-valuenow="60"
+              class="progress-bar bg-warning"
+              role="progressbar"
+              style="width: 80%;"
+            />
+          </div>
+        </div>
+        <div
+          class="col-4"
+        >
+          <div
+            class="mt-2 float-end"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <h3
+      class="mb-3"
+    >
+      Quiz Form
+    </h3>
+    <div
+      class="card"
+    >
+      <div
+        class="card-body"
+      >
+        <form>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="category"
+            >
+              Category
+            </label>
+            <select
+              class="form-select"
+              id="category"
+              name="category"
+              required=""
+            >
+              <option
+                disabled=""
+                value=""
+              >
+                Choose here
+              </option>
+              <option
+                value="9"
+              >
+                General Knowledge
+              </option>
+              <option
+                value="10"
+              >
+                Entertainment: Books
+              </option>
+              <option
+                value="32"
+              >
+                Entertainment: Cartoon and Animations
+              </option>
+              <option
+                value="11"
+              >
+                Entertainment: Film
+              </option>
+              <option
+                value="31"
+              >
+                Entertainment: Japanese Anime and Manga
+              </option>
+              <option
+                value="22"
+              >
+                Geography
+              </option>
+              <option
+                value="23"
+              >
+                History
+              </option>
+              <option
+                value="17"
+              >
+                Science and Nature
+              </option>
+              <option
+                value="18"
+              >
+                Science: Computers
+              </option>
+              <option
+                value="19"
+              >
+                Science: Mathematics
+              </option>
+            </select>
+          </div>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="difficulty"
+            >
+              Difficulty
+            </label>
+            <select
+              class="form-select"
+              id="difficulty"
+              name="difficulty"
+              required=""
+            >
+              <option
+                disabled=""
+                value=""
+              >
+                Choose here
+              </option>
+              <option
+                value="easy"
+              >
+                Easy
+              </option>
+              <option
+                value="medium"
+              >
+                Medium
+              </option>
+              <option
+                value="hard"
+              >
+                Hard
+              </option>
+            </select>
+          </div>
+          <button
+            class="btn btn-primary float-end mt-4"
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

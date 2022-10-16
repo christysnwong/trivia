@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="table-responsive"
+  >
+    <table
+      class="table table-striped table-sm"
+    >
+      <thead>
+        <tr>
+          <th
+            scope="col"
+          >
+            #
+          </th>
+          <th
+            class="text-capitalize fw-bold"
+            scope="col"
+          >
+            category
+          </th>
+          <th
+            class="text-capitalize fw-bold"
+            scope="col"
+          >
+            difficulty
+          </th>
+          <th
+            class="text-capitalize fw-bold"
+            scope="col"
+          >
+            score
+          </th>
+          <th
+            class="text-capitalize fw-bold"
+            scope="col"
+          >
+            points
+          </th>
+          <th
+            class="text-capitalize fw-bold"
+            scope="col"
+          >
+            date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th
+            scope="row"
+          >
+            1
+          </th>
+          <td
+            class="text-capitalize"
+          >
+            Entertainment: Books
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            easy
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            9
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            70
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            Sep 8th 2022, 1:20pm
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+          >
+            2
+          </th>
+          <td
+            class="text-capitalize"
+          >
+            Entertainment: Film
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            easy
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            9
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            70
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            Sep 8th 2022, 12:20pm
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+          >
+            3
+          </th>
+          <td
+            class="text-capitalize"
+          >
+            Entertainment: Film
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            medium
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            10
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            70
+          </td>
+          <td
+            class="text-capitalize"
+          >
+            Sep 8th 2022, 1:06pm
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</DocumentFragment>
+`;

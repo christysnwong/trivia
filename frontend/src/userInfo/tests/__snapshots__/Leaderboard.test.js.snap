@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4"
+  >
+    <h3
+      class="mb-5"
+    >
+      <i
+        class="fa-solid fa-globe me-2"
+      />
+      Leaderboard
+    </h3>
+    <p
+      class="mb-3"
+    >
+      The following table shows the top score in each category and difficulty. Your score appears in red if you make it to the leaderboard (limited to registered users only).
+    </p>
+    <p
+      class="mb-4"
+    >
+      Due to the limited number of questions in some categories, each user can only have 3 attempts to make a record on the leaderboard.
+    </p>
+    <div
+      class="table-responsive"
+    >
+      <table
+        class="table table-striped table-sm"
+      >
+        <thead>
+          <tr>
+            <th
+              scope="col"
+            >
+              #
+            </th>
+          </tr>
+        </thead>
+        <tbody />
+      </table>
+    </div>
+  </div>
+</DocumentFragment>
+`;

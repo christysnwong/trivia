@@ -1,0 +1,144 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4"
+  >
+    <h3
+      class="mb-5"
+    >
+      <i
+        class="fa-solid fa-address-card me-2"
+      />
+      Profile
+    </h3>
+    <div
+      class="row mb-3"
+    >
+      <div
+        class="col-4 text-capitalize fw-bold"
+      >
+        username
+      </div>
+      <div
+        class="col-8"
+      >
+        testuser
+      </div>
+    </div>
+    <div
+      class="row mb-3"
+    >
+      <div
+        class="col-4 text-capitalize fw-bold"
+      >
+        first_name
+      </div>
+      <div
+        class="col-8"
+      >
+        Test
+      </div>
+    </div>
+    <div
+      class="row mb-3"
+    >
+      <div
+        class="col-4 text-capitalize fw-bold"
+      >
+        last_name
+      </div>
+      <div
+        class="col-8"
+      >
+        User
+      </div>
+    </div>
+    <div
+      class="row mb-3"
+    >
+      <div
+        class="col-4 text-capitalize fw-bold"
+      >
+        email
+      </div>
+      <div
+        class="col-8"
+      >
+        test@test.com
+      </div>
+    </div>
+    <button
+      class="btn btn-success mt-4 me-2"
+      method="get"
+      type="button"
+    >
+      Edit your info
+    </button>
+    <button
+      class="btn btn-danger mt-4"
+      data-bs-target="#deleteModal"
+      data-bs-toggle="modal"
+      type="button"
+    >
+      Delete this account
+    </button>
+    <div
+      aria-hidden="true"
+      aria-labelledby="deleteModalLabel"
+      class="modal fade"
+      id="deleteModal"
+      tabindex="-1"
+    >
+      <div
+        class="modal-dialog"
+      >
+        <div
+          class="modal-content"
+        >
+          <div
+            class="modal-header"
+          >
+            <h5
+              class="modal-title"
+              id="deleteModalLabel"
+            >
+              Deleting Account 'testuser'
+            </h5>
+            <button
+              aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              type="button"
+            />
+          </div>
+          <div
+            class="modal-body"
+          >
+            Are you sure that you want to delete this account? This action cannot be reversed.
+          </div>
+          <div
+            class="modal-footer"
+          >
+            <button
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              type="button"
+            >
+              Close
+            </button>
+            <button
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+              type="button"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

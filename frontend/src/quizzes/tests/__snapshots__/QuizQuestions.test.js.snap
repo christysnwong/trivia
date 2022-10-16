@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <p>
+    Time Duration: 0 secs
+  </p>
+  <hr />
+  <h5
+    class="mb-4"
+  >
+    Question 2: 
+    <span>
+      Virgin Trains, Virgin Atlantic and Virgin Racing, are all companies owned by which famous entrepreneur?   
+    </span>
+  </h5>
+  <p
+    class="btn-ans"
+  >
+    <button
+      class="btn btn-outline-secondary"
+      id="Richard Branson"
+    >
+      Richard Branson
+    </button>
+  </p>
+  <p
+    class="btn-ans"
+  >
+    <button
+      class="btn btn-outline-secondary"
+      id="Bill Gates"
+    >
+      Bill Gates
+    </button>
+  </p>
+  <p
+    class="btn-ans"
+  >
+    <button
+      class="btn btn-outline-secondary"
+      id="Alan Sugar"
+    >
+      Alan Sugar
+    </button>
+  </p>
+  <p
+    class="btn-ans"
+  >
+    <button
+      class="btn btn-outline-secondary"
+      id="Donald Trump"
+    >
+      Donald Trump
+    </button>
+  </p>
+  <hr />
+  <div>
+    <button
+      class="btn btn-secondary me-3"
+    >
+      Reset
+    </button>
+  </div>
+</DocumentFragment>
+`;

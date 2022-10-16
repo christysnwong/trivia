@@ -1,0 +1,154 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4"
+  >
+    <h3
+      class="mb-5"
+    >
+      <i
+        class="fa-solid fa-heart me-2"
+      />
+      My Favourites
+    </h3>
+    <h3
+      class="mb-4"
+    >
+      Folders
+      <span
+        class="ms-2 pointer-cursor"
+      >
+        <i
+          class="fa-solid fa-folder-plus"
+        />
+      </span>
+    </h3>
+    <div
+      class="collapse"
+    >
+      <div
+        class="card mb-5"
+      >
+        <div
+          class="card-body"
+        >
+          <form>
+            <div
+              class="mb-2"
+            >
+              <label
+                class="form-label"
+                for="username"
+              >
+                Create a Folder: 
+              </label>
+              <input
+                class="form-control"
+                id="folderName"
+                maxlength="20"
+                name="folderName"
+                placeholder="New Folder Name"
+                value=""
+              />
+            </div>
+            <button
+              class="btn btn-secondary mt-4 me-3"
+              method="get"
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary mt-4"
+              method="post"
+              type="submit"
+            >
+              Create
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row row-cols-3 mb-4"
+    />
+    <div
+      aria-hidden="true"
+      aria-labelledby="deleteModalLabel"
+      class="modal fade"
+      id="deleteModal"
+      tabindex="-1"
+    >
+      <div
+        class="modal-dialog"
+      >
+        <div
+          class="modal-content"
+        >
+          <div
+            class="modal-header"
+          >
+            <h5
+              class="modal-title"
+              id="deleteModalLabel"
+            >
+              Deleting Folder
+            </h5>
+            <button
+              aria-label="Close"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              type="button"
+            />
+          </div>
+          <div
+            class="modal-body"
+          >
+            Are you sure that you want to delete this folder? Any trivia stored in this folder will also be deleted as well.
+          </div>
+          <div
+            class="modal-footer"
+          >
+            <button
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              type="button"
+            >
+              Close
+            </button>
+            <button
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+              type="button"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="collapse"
+    />
+    <div
+      class="row"
+    >
+      <div
+        class="col-12"
+      >
+        <div>
+          <p>
+            You can either create a new folder by clicking on 
+            <i
+              class="fa-solid fa-folder-plus"
+            />
+             or select a folder above to view your favourited trivia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

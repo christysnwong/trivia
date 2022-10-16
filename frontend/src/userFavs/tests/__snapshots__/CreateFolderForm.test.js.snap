@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="card mb-5"
+  >
+    <div
+      class="card-body"
+    >
+      <form>
+        <div
+          class="mb-2"
+        >
+          <label
+            class="form-label"
+            for="username"
+          >
+            Create a Folder: 
+          </label>
+          <input
+            class="form-control"
+            id="folderName"
+            maxlength="20"
+            name="folderName"
+            placeholder="New Folder Name"
+            value=""
+          />
+        </div>
+        <button
+          class="btn btn-secondary mt-4 me-3"
+          method="get"
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          class="btn btn-primary mt-4"
+          method="post"
+          type="submit"
+        >
+          Create
+        </button>
+      </form>
+    </div>
+  </div>
+</DocumentFragment>
+`;

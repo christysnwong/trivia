@@ -1,0 +1,162 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <h3
+      class="mb-4"
+    >
+      <i
+        class="fa-solid fa-folder-open me-2"
+      />
+      TEST1
+    </h3>
+    <div>
+      <table
+        class="table table-striped table-sm"
+      >
+        <thead>
+          <tr>
+            <th
+              scope="col"
+            >
+              #
+            </th>
+            <th
+              class="text-capitalize fw-bold"
+              scope="col"
+            >
+              question
+            </th>
+            <th
+              class="text-capitalize fw-bold"
+              scope="col"
+            >
+              answer
+            </th>
+            <th
+              class="text-capitalize fw-bold d-none d-sm-table-cell"
+              scope="col"
+            >
+              Options
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            id="4"
+          >
+            <th
+              scope="row"
+            >
+              1
+            </th>
+            <td
+              class="text-capitalize"
+            >
+              <span>
+                U1 Question 1 in TEST1
+              </span>
+            </td>
+            <td
+              class="text-capitalize"
+            >
+              <span>
+                Answer 1
+              </span>
+            </td>
+            <td
+              class="d-none d-sm-table-cell"
+            >
+              <div
+                class="my-0 btn-group-sm btn-group"
+                role="group"
+              >
+                <div
+                  class="btn-group-sm btn-group"
+                  role="group"
+                >
+                  <div
+                    class="dropdown"
+                  >
+                    <button
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      class="dropdown-toggle btn btn-secondary btn-sm"
+                      type="button"
+                    >
+                      <i
+                        class="fa-solid fa-up-down-left-right"
+                      />
+                    </button>
+                    <div
+                      aria-hidden="true"
+                      class="dropdown-menu"
+                      role="menu"
+                      tabindex="-1"
+                    >
+                      <h6
+                        class="dropdown-header"
+                        tabindex="-1"
+                      >
+                        Move to...
+                      </h6>
+                      <div
+                        class="dropdown-divider"
+                        tabindex="-1"
+                      />
+                      <button
+                        class="dropdown-item"
+                        id="1"
+                        role="menuitem"
+                        tabindex="0"
+                        type="button"
+                      >
+                        All
+                      </button>
+                      <button
+                        class="dropdown-item"
+                        id="2"
+                        role="menuitem"
+                        tabindex="0"
+                        type="button"
+                      >
+                        TEST1
+                      </button>
+                      <button
+                        class="dropdown-item"
+                        id="3"
+                        role="menuitem"
+                        tabindex="0"
+                        type="button"
+                      >
+                        TEST2
+                      </button>
+                      <button
+                        class="dropdown-item"
+                        id="4"
+                        role="menuitem"
+                        tabindex="0"
+                        type="button"
+                      >
+                        TEST3
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="btn btn-danger"
+                >
+                  <i
+                    class="fa-sharp fa-solid fa-trash"
+                  />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</DocumentFragment>
+`;

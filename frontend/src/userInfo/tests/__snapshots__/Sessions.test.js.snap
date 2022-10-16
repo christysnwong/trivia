@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4"
+  >
+    <h3
+      class="mb-5"
+    >
+      <i
+        class="fa-solid fa-clipboard me-2"
+      />
+      Recent Played Sessions
+    </h3>
+    There is no session data in this section. Try out a trivia quiz!
+  </div>
+</DocumentFragment>
+`;

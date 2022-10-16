@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4"
+  >
+    <h3
+      class="mb-5"
+    >
+      <i
+        class="fas fa-pen-alt me-2"
+      />
+      Edit Profile
+    </h3>
+    <div
+      class="card"
+    >
+      <div
+        class="card-body"
+      >
+        <form>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="username"
+            >
+              Username: 
+            </label>
+            <p
+              class="form-control-plaintext"
+            >
+              testuser
+            </p>
+          </div>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="firstName"
+            >
+              First Name
+            </label>
+            <input
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              value=""
+            />
+          </div>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="lastName"
+            >
+              Last Name
+            </label>
+            <input
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              value=""
+            />
+          </div>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="email"
+            >
+              Email
+            </label>
+            <input
+              class="form-control"
+              id="email"
+              name="email"
+              value="test@test.com"
+            />
+          </div>
+          <div
+            class="mb-3"
+          >
+            <label
+              class="form-label"
+              for="password"
+            >
+              Confirm password to make changes
+            </label>
+            <input
+              class="form-control"
+              id="password"
+              name="password"
+              type="password"
+              value=""
+            />
+          </div>
+          <button
+            class="btn btn-secondary mt-4 me-4"
+            method="get"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary mt-4"
+            method="post"
+            type="submit"
+          >
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
