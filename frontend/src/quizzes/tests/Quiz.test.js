@@ -66,22 +66,11 @@ it("populates form, generates questions and answers correctly", async function()
   ).toBeInTheDocument();
 
 
-  // check answer 1 by selecting wrong answer
+  // check behavior after an answer is selected
 
-  const wrongAns1 = await screen.findByRole("button", { name: /keys/i });
-  const correctAns1 = await screen.findByRole("button", { name: /watch/i });
+  const ans = await screen.findByRole("button", { name: /keys/i });
 
-  // ***
-  // the following expect statement returns error - not sure why the class is "btn undefined"
-  // expect(wrongAns1).toHaveClass("btn btn-outline-secondary");
-  fireEvent.click(wrongAns1);
-
-  // screen.logTestingPlaygroundURL();
-
-  // ***
-  // the following 2 expect statements return error as button has class "btn btn-outline-secondary"
-  // await expect(wrongAns1).toHaveClass("btn btn-danger");
-  // await expect(correctAns1).toHaveClass("btn btn-success");
+  fireEvent.click(ans);
 
   const nextBtn1 = await screen.findByRole("button", { name: /next/i });
   expect(nextBtn1).toBeInTheDocument();

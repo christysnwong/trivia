@@ -32,7 +32,7 @@ The tech stack of this project consists of
 
 #### API
 
-* Open Trivia DB
+* Open Trivia DB (https://opentdb.com/)
 
 
 #### Set up
@@ -43,16 +43,16 @@ Prerequisites: Ensure that Git, NodeJS and NPM are already installed on your com
 2. On your terminal, go to the directory that you just created
     * $ cd NAME_OF_DIRECTORY
 3. Git-clone and download the files from github:
-    * $ git clone https://
+    * $ git clone git@github.com:christysnwong/trivia.git
 4. Navigate to the backend folder
 5. Install all the programs required for the backend by entering this on your terminal
     * $ npm install 
-6. To run the backend server on the local host (http://localhost:3001 for backend)
+6. To run the backend server on the local host (http://localhost:3001 for backend), type the following command
     * $ node server.js 
 7. Navigate to the frontend folder
 8. Install all the programs required for the frontend by entering this on your terminal
     * $ npm install 
-9. 6. To run the frontend server on the local host (http://localhost:3000 for frontend)
+9. To open the website on the local host (http://localhost:3000 for frontend), type the following command 
     * $ npm start
 
 #### Testing
