@@ -13,7 +13,7 @@ The tech stack of this project consists of
 
 #### Database Schema
 
-![](schemas.PNG)
+![](schemas.png)
 
 #### Functionality
 
