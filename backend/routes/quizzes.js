@@ -7,6 +7,8 @@ const axios = require("axios");
 
 const router = new express.Router();
 
+const { shuffle } = require("../helpers/shuffle");
+
 const API_URL = "https://opentdb.com/api.php";
 
 router.get("/", async function (req, res, next) {
@@ -24,19 +26,6 @@ router.get("/", async function (req, res, next) {
     }
 
     let quizData = resp.data.results.map((q) => {
-      const shuffle = (array) => {
-        let counter = array.length;
-
-        while (counter > 0) {
-          let randIdx = Math.floor(Math.random() * counter);
-          counter--;
-
-          [array[counter], array[randIdx]] = [array[randIdx], array[counter]];
-        }
-
-        return array;
-      };
-
       q.answers = shuffle([q.correct_answer, ...q.incorrect_answers]);
 
       return q;

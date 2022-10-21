@@ -6,7 +6,7 @@ import UserProvider from "../../common/UserProvider";
 
 import TriviaApi from "../../api/api";
 
-const { commonBeforeEach, commonAfterAll } = require("./_testCommonUserFavs");
+import { commonBeforeEach, commonAfterAll } from "./_testCommonUserFavs";
 
 beforeEach(commonBeforeEach);
 afterAll(commonAfterAll);
