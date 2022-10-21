@@ -1,10 +1,7 @@
-import { useState, useEffect, useContext } from "react";
-import UserContext from "../common/UserContext";
 
 import { Route, Switch, Redirect } from "react-router-dom";
 
 import Home from "../home/Home.js";
-// import Quizzes from "../quizzes";
 
 import Quiz from "../quizzes/Quiz"
 import Leaderboard from "../userInfo/Leaderboard"

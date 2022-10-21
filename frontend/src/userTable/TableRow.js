@@ -23,19 +23,37 @@ const TableRow = ({ id, entry, leaderboard }) => {
 
       {/* check to see if the table is used for leaderboard and if the record belongs to user, set red font */}
       {(!leaderboard || !isUser) &&
-        Object.values(entry).map((field, idx) => (
-          <td key={idx} className="text-capitalize">
-            {field}
-          </td>
-        ))}
+        Object.values(entry).map((field, idx) => {
+          if (idx === 2) {
+            return (
+              <td key={idx}>
+                {field}
+              </td>
+            );
+          }
+
+          return (
+            <td key={idx} className="text-capitalize">
+              {field}
+            </td>
+          );
+        })}
 
       {leaderboard &&
         isUser &&
-        Object.values(entry).map((field, idx) => (
-          <td key={idx} className="text-capitalize text-danger fw-bold">
+        Object.values(entry).map((field, idx) => {
+          if (idx === 2) {
+            return (
+              <td key={idx} className="text-danger fw-bold">
+                {field}
+              </td>
+            );
+          }
+
+          return (<td key={idx} className="text-capitalize text-danger fw-bold">
             {field}
-          </td>
-        ))}
+          </td>)
+        })}
     </tr>
   );
 };
