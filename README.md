@@ -1,5 +1,5 @@
 # Trivia Guru
-[LIVE DEMO COMING SOON!](https://)
+[Check it out here!](http://triviaguru.surge.sh/)
 
 #### Introduction
 
@@ -37,7 +37,8 @@ The tech stack of this project consists of
 
 #### Set up
 
-Prerequisites: Ensure that Git, NodeJS and NPM are already installed on your computer.
+Prerequisites: This project requires the usage of database to run properly.
+Ensure that Git, Postgresql, NodeJS and NPM are already installed on your computer.
 
 1. Make a new directory for this project
 2. On your terminal, go to the directory that you just created
@@ -47,13 +48,18 @@ Prerequisites: Ensure that Git, NodeJS and NPM are already installed on your com
 4. Navigate to the backend folder
 5. Install all the programs required for the backend by entering this on your terminal
     * $ npm install 
-6. To run the backend server on the local host (http://localhost:3001 for backend), type the following command
+6. Ensure that PostgreSQL is already up and running. If not, start it up by typing
+    * $ sudo service postgresql start 
+7. Create the database on PostgreSQL, setup tables and seed sample data by typing
+    * $ psql < trivia.sql
+8. To run the backend server on the local host (http://localhost:3001 for backend), type
     * $ node server.js 
-7. Navigate to the frontend folder
-8. Install all the programs required for the frontend by entering this on your terminal
+9. Navigate to the frontend folder
+10. Install all the programs required for the frontend by entering this on your terminal
     * $ npm install 
-9. To open the website on the local host (http://localhost:3000 for frontend), type the following command 
+11. To open the website on the local host (http://localhost:3000 for frontend), type 
     * $ npm start
+
 
 #### Testing
 

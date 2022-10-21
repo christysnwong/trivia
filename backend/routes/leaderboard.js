@@ -31,7 +31,7 @@ router.get(
     try {
 
       let { category, difficulty } = req.query;
-      
+
       const topLeaderboardScores = await User.getLeaderboardScores(
         category,
         difficulty
