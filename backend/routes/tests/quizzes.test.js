@@ -133,8 +133,6 @@ describe("GET /quizzes", function () {
         .get("/quizzes")
         .query({ category: 9, difficulty: "easy" });
 
-      // console.log("=======resp.body", resp.body);
-
       expect(resp.body).toEqual(mockQuizData);
 
       nock.cleanAll();

@@ -82,7 +82,7 @@ const QuizResults = ({
         });
 
         if (res.updated) {
-          console.debug("Successfully updated the leaderboard record");
+          // console.debug("Successfully updated the leaderboard record");
 
           setMsg((msg) => msg + " and a new leaderboard record!");
 
@@ -96,7 +96,7 @@ const QuizResults = ({
               `You have earned the gold trophy badge for breaking the previous leaderboard record! `
             );
             setBadges((badge) => [...badge, "trophy"]);
-            console.debug("Successfully added the leaderboard badge");
+            // console.debug("Successfully added the leaderboard badge");
           } else {
             setMsg3(`Wow!! Congrats on making another leaderboard record! `);
           }
@@ -126,9 +126,9 @@ const QuizResults = ({
       });
 
       if (res.updated) {
-        console.debug(
-          "Successfully updated user's played counts for this category and difficulty"
-        );
+        // console.debug(
+        //   "Successfully updated user's played counts for this category and difficulty"
+        // );
 
         return res.updated.played;
       }
@@ -155,7 +155,7 @@ const QuizResults = ({
         });
 
         if (badgeRes.added) {
-          console.debug("Successfully added the level badge", res.title);
+          // console.debug("Successfully added the level badge", res.title);
           setBadges((badge) => [...badge, res.title.toLowerCase()]);
           setMsg3((msg) => {
             if (msg) {

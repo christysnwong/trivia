@@ -38,7 +38,7 @@ const ProfileEditForm = () => {
 
       if (token) {
         let user = await JoblyApi.patchUser(currUser.username, formData);
-        console.debug("ProfileEditForm - patch user", user);
+        // console.debug("ProfileEditForm - patch user", user);
 
         setCurrUser((currUserData) => ({
           ...currUserData,

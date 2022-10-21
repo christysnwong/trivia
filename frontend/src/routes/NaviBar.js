@@ -20,7 +20,7 @@ import "./NaviBar.css";
 
 const NaviBar = ({ logout }) => {
   const { currUser } = useContext(UserContext);
-  console.debug("Navibar - currUser", currUser);
+  // console.debug("Navibar - currUser", currUser);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);

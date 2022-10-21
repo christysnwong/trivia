@@ -26,13 +26,12 @@ import Favourite from "../userFavs/Favourite.js";
 
 
 const Routes = ({ login, signup }) => {
-  const { currUser } = useContext(UserContext);
 
-  console.debug(
-    "Routes",
-    `login=${typeof login}`,
-    // `register=${typeof register}`
-  );
+  // console.debug(
+  //   "Routes",
+  //   `login=${typeof login}`,
+  //   // `register=${typeof register}`
+  // );
 
   return (
     <div className="pt-5">

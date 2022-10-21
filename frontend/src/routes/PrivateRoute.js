@@ -12,18 +12,18 @@ import UserContext from "../common/UserContext";
 function PrivateRoute({ exact, path, children }) {
   const { currUser } = useContext(UserContext);
 
-  console.debug(
-    "PrivateRoute",
-    "exact=",
-    exact,
-    "path=",
-    path,
-    "currentUser=",
-    currUser
-  );
+  // console.debug(
+  //   "PrivateRoute",
+  //   "exact=",
+  //   exact,
+  //   "path=",
+  //   path,
+  //   "currentUser=",
+  //   currUser
+  // );
 
   if (!currUser) {
-    console.debug("PrivateRoute - REDIRECT TO LOGIN for no currUser");
+    // console.debug("PrivateRoute - REDIRECT TO LOGIN for no currUser");
     return <Redirect to="/login" />;
   }
 
