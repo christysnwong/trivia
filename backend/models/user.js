@@ -996,8 +996,7 @@ class User {
     query += whereExp + orderByExp;
 
     const result = await db.query(query, queryVals);
-    console.log("CHECK query", query);
-    console.log("CHECK result", result.rows);
+
     // if no score data
     if (!result.rows[0]) return 0;
 

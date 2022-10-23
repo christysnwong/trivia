@@ -1,4 +1,4 @@
-"use strict";
+("use strict");
 
 const request = require("supertest");
 
@@ -20,9 +20,6 @@ afterAll(commonAfterAll);
 
 /** GET /leaderboard ======================================================================= */
 
-
-
-
 describe("GET /leaderboard", function () {
   test("works", async function () {
     const resp = await request(app)
@@ -34,14 +31,16 @@ describe("GET /leaderboard", function () {
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(200);
     expect(resp.body).toEqual({
-      topLeaderboardScores: [{
-        category: "General Knowledge",
-        difficulty: "easy",
-        username: "u1",
-        score: 7,
-        points: 120,
-        date: expect.any(String),
-      }]
+      topLeaderboardScores: [
+        {
+          category: "General Knowledge",
+          difficulty: "easy",
+          username: "u1",
+          score: 7,
+          points: 120,
+          date: expect.any(String),
+        },
+      ],
     });
   });
 
@@ -94,7 +93,7 @@ describe("GET /leaderboard", function () {
           score: 7,
           points: 120,
           date: expect.any(String),
-        }
+        },
       ],
     });
   });
@@ -127,7 +126,6 @@ describe("GET /leaderboard", function () {
     });
   });
 });
-
 
 /** POST /leaderboard ====================================================================== */
 
@@ -166,7 +164,6 @@ describe("POST /leaderboard", function () {
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
-    
   });
 
   test("bad request with invalid data", async function () {
@@ -184,17 +181,14 @@ describe("POST /leaderboard", function () {
   });
 
   test("unauth for anon", async function () {
-    const resp = await request(app)
-      .post("/leaderboard")
-      .send({
-        userId: 1,
-        category: "General Knowledge",
-        difficulty: "easy",
-        score: 7,
-        points: 140,
-      })
-      
+    const resp = await request(app).post("/leaderboard").send({
+      userId: 1,
+      category: "General Knowledge",
+      difficulty: "easy",
+      score: 7,
+      points: 140,
+    });
+
     expect(resp.statusCode).toEqual(401);
-    
   });
 });

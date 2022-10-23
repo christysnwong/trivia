@@ -1,3 +1,5 @@
+("use strict");
+
 const { shuffle } = require("../shuffle");
 
 const mockApiResp = {
@@ -64,14 +66,12 @@ const shuffledMockQuizData = [
       "Metropolitan Line",
       "Victoria Line",
       "Circle Line",
-      "Bakerloo Line"
+      "Bakerloo Line",
     ],
   },
 ];
 
-
 describe("shuffle", function () {
-
   test("shuffles array's answers", function () {
     Math.random = jest.fn(() => 0.5);
 
@@ -83,6 +83,4 @@ describe("shuffle", function () {
 
     expect(result).toEqual(shuffledMockQuizData);
   });
-
-
 });

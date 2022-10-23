@@ -1,10 +1,8 @@
-// "use strict";
-
+("use strict");
 
 beforeEach(() => {
   jest.resetModules();
 });
-
 
 describe("config can come from env", function () {
   test("works", function () {
@@ -28,8 +26,4 @@ describe("config can come from env", function () {
     const config = require("./config");
     expect(config.DB_URI).toEqual("postgresql:///trivia_test");
   });
-
 });
-
-
-

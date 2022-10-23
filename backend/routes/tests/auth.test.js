@@ -1,4 +1,4 @@
-"use strict";
+("use strict");
 
 const request = require("supertest");
 
@@ -32,7 +32,7 @@ describe("POST /auth/token", function () {
         firstName: "u1F",
         lastName: "u1L",
         email: "u1@email.com",
-        isAdmin: false
+        isAdmin: false,
       },
     });
   });
@@ -70,7 +70,6 @@ describe("POST /auth/token", function () {
 });
 
 /** POST /auth/register ================================================================= */
-
 
 describe("POST /auth/register", function () {
   const newUser = {

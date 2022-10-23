@@ -1,4 +1,4 @@
-"use strict";
+("use strict");
 
 const {
   NotFoundError,
@@ -303,93 +303,83 @@ describe("createFolder", function () {
   });
 });
 
-
 /** getFolderTrivia========================================================================= */
 
 describe("getFolderTrivia", function () {
-    test("works", async function () {
-      const folderTrivia = await User.getFolderTrivia(1);
-      expect(folderTrivia).toEqual({
-        folderId: 1,
-        folderName: "All",    
-        trivia: [{id: 1,
-                question: "U1 Question 1 in All",
-                answer: "Answer 1"
-                }]
-      });
+  test("works", async function () {
+    const folderTrivia = await User.getFolderTrivia(1);
+    expect(folderTrivia).toEqual({
+      folderId: 1,
+      folderName: "All",
+      trivia: [{ id: 1, question: "U1 Question 1 in All", answer: "Answer 1" }],
     });
+  });
 
-    test("no trivia data in folder", async function () {
-      const emptyFolder = await User.getFolderTrivia(3);
-      expect(emptyFolder).toEqual({
-        folderId: 3,
-        folderName: "All",
-        trivia: [],
-      });
+  test("no trivia data in folder", async function () {
+    const emptyFolder = await User.getFolderTrivia(3);
+    expect(emptyFolder).toEqual({
+      folderId: 3,
+      folderName: "All",
+      trivia: [],
     });
+  });
 
-    test("not found if no such folder", async function () {
-      try {
-        await User.getFolderTrivia(99);
-        fail();
-      } catch (err) {
-        expect(err instanceof NotFoundError).toBeTruthy();
-      }
-    });
-
-
-})
+  test("not found if no such folder", async function () {
+    try {
+      await User.getFolderTrivia(99);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
 
 /** renameFolder ========================================================================= */
 
 describe("renameFolder", function () {
-    const updateFolderName = {
-      userId: 1,
-      newFolderName: "Abc v2",
-    };
+  const updateFolderName = {
+    userId: 1,
+    newFolderName: "Abc v2",
+  };
 
-    test("works", async function () {
-
-        const updatedFolder = await User.renameFolder(2, updateFolderName);
-        expect(updatedFolder).toEqual({
-          folderId: 2,
-          name: "Abc v2",
-        });
-
+  test("works", async function () {
+    const updatedFolder = await User.renameFolder(2, updateFolderName);
+    expect(updatedFolder).toEqual({
+      folderId: 2,
+      name: "Abc v2",
     });
+  });
 
-    test("bad request with dup data", async function () {
-      try {
-        await User.renameFolder(2, {
-            userId: 1,
-            newFolderName: "All",
-        });
-        
-      } catch (err) {
-        expect(err instanceof BadRequestError).toBeTruthy();
-      }
-    });
+  test("bad request with dup data", async function () {
+    try {
+      await User.renameFolder(2, {
+        userId: 1,
+        newFolderName: "All",
+      });
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
 
-    test("not found if no such user", async function () {
-      try {
-        await User.renameFolder(100, {
-          userId: 99,
-          newFolderName: "xyz",
-        });
-      } catch (err) {
-        expect(err instanceof NotFoundError).toBeTruthy();
-      }
-    });
+  test("not found if no such user", async function () {
+    try {
+      await User.renameFolder(100, {
+        userId: 99,
+        newFolderName: "xyz",
+      });
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
 
-    test("not found if no such folder", async function () {
-      try {
-        await User.renameFolder(99, updateFolderName);
-        fail();
-      } catch (err) {
-        expect(err instanceof NotFoundError).toBeTruthy();
-      }
-    });
-
+  test("not found if no such folder", async function () {
+    try {
+      await User.renameFolder(99, updateFolderName);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
 });
 
 /** removeFolder ========================================================================= */
@@ -398,10 +388,9 @@ describe("removeFolder", function () {
   test("works", async function () {
     const deletedFolder = await User.removeFolder("u1", 2);
     expect(deletedFolder).toEqual({
-        folderId: 2,
-        name: "Abc"
+      folderId: 2,
+      name: "Abc",
     });
-
   });
 
   test("bad request for deleting user's All folder", async function () {
@@ -421,7 +410,6 @@ describe("removeFolder", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-
 });
 
 /** FAV TRIVIAS======================================================================== */
@@ -454,7 +442,6 @@ describe("getAllFav", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-
 });
 
 /** addToFav ========================================================================= */
@@ -462,10 +449,10 @@ describe("getAllFav", function () {
 describe("addToFav", function () {
   test("works", async function () {
     const favTrivia = {
-        userId: 1,
-        question: "U1 Question 2 in All",
-        answer: "Answer 1",
-        folderName: "All",
+      userId: 1,
+      question: "U1 Question 2 in All",
+      answer: "Answer 1",
+      folderName: "All",
     };
 
     const fav = await User.addToFav(favTrivia);
@@ -476,16 +463,15 @@ describe("addToFav", function () {
       answer: "Answer 1",
       folderId: 1,
     });
-
   });
 
   test("not found if no such folder", async function () {
-      const favTrivia = {
-        userId: 1,
-        question: "U1 Question 2 in All",
-        answer: "Answer 1",
-        folderName: "None",
-      };
+    const favTrivia = {
+      userId: 1,
+      question: "U1 Question 2 in All",
+      answer: "Answer 1",
+      folderName: "None",
+    };
 
     try {
       await User.addToFav(favTrivia);
@@ -493,7 +479,6 @@ describe("addToFav", function () {
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
-
   });
 
   test("not found if no such user", async function () {
@@ -517,7 +502,7 @@ describe("addToFav", function () {
 
 describe("getTrivia", function () {
   test("works", async function () {
-    const trivia1 = await User.getTrivia(1)
+    const trivia1 = await User.getTrivia(1);
     expect(trivia1).toEqual({
       id: 1,
       userId: 1,
@@ -525,7 +510,6 @@ describe("getTrivia", function () {
       answer: "Answer 1",
       folderId: 1,
     });
-
   });
 
   test("not found if no such trivia", async function () {
@@ -542,7 +526,10 @@ describe("getTrivia", function () {
 
 describe("moveTrivia", function () {
   test("works", async function () {
-    const movedTrivia = await User.moveTrivia(1, { userId: 1, folderName: "Abc" });
+    const movedTrivia = await User.moveTrivia(1, {
+      userId: 1,
+      folderName: "Abc",
+    });
     expect(movedTrivia).toEqual({
       id: 1,
       user_id: 1,
@@ -577,7 +564,7 @@ describe("removeTrivia", function () {
   test("works", async function () {
     const removedTrivia = await User.removeTrivia("u1", 2);
     expect(removedTrivia).toEqual({
-      triviaId: 2
+      triviaId: 2,
     });
   });
 
@@ -589,9 +576,7 @@ describe("removeTrivia", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-
 });
-
 
 /** STATS ============================================================================ */
 /** calRemainingPts=================================================================== */
@@ -601,7 +586,6 @@ describe("calRemainingPts", function () {
     const { remainingPts, levelPts } = await User.calRemainingPts(999);
     expect(remainingPts).toEqual(1);
     expect(levelPts).toEqual(200);
-
   });
 
   test("works 2", async function () {
@@ -609,7 +593,6 @@ describe("calRemainingPts", function () {
     expect(remainingPts).toEqual(499);
     expect(levelPts).toEqual(500);
   });
-
 });
 
 /** getStats ======================================================================== */
@@ -624,11 +607,9 @@ describe("getStats", function () {
       "quizzes completed": 9,
       points: 900,
       remainingPts: 100,
-      levelPts: 200
+      levelPts: 200,
     });
   });
-
-
 });
 
 /** updatePoints ==================================================================== */
@@ -662,11 +643,13 @@ describe("updatePoints", function () {
 describe("getBadges", function () {
   test("works", async function () {
     const badges = await User.getBadges("u1");
-    expect(badges).toEqual([{
+    expect(badges).toEqual([
+      {
         badgeName: "Newbie",
         badgeUrl: "/badges/newbie.gif",
-        date: "Sep 8th 2022, 1:04pm"
-    }]);
+        date: "Sep 8th 2022, 1:04pm",
+      },
+    ]);
   });
 
   test("not found if no such user", async function () {
@@ -677,18 +660,17 @@ describe("getBadges", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-
 });
 
 /** postBadge ======================================================================= */
 
 describe("postBadge", function () {
   test("works", async function () {
-    const badge = await User.postBadge({userId: 2, badge: "Trophy"});
+    const badge = await User.postBadge({ userId: 2, badge: "Trophy" });
     expect(badge).toEqual({
       badgeName: "Trophy",
       badgeUrl: "/badges/trophy.gif",
-      date: badge.date
+      date: badge.date,
     });
   });
 
@@ -696,7 +678,6 @@ describe("postBadge", function () {
     await User.postBadge({ userId: 2, badge: "trophy" });
     let resp = await User.postBadge({ userId: 2, badge: "trophy" });
     expect(resp).toEqual("The user has already earned this badge.");
-
   });
 
   test("not found if no such user", async function () {
@@ -707,9 +688,7 @@ describe("postBadge", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-  
 });
-
 
 /** SCORES =========================================================================== */
 /** getScores ======================================================================== */
@@ -758,19 +737,21 @@ describe("getScores", function () {
         score: 5,
         points: 85,
         date: "Sep 8th 2022, 1:10pm",
-      }
+      },
     ]);
   });
 
   test("works for specified category and difficulty", async function () {
     const score = await User.getScores("u1", "General Knowledge", "easy");
-    expect(score).toEqual([{
-      category: "General Knowledge",
-      difficulty: "easy",
-      score: 7,
-      points: 120,
-      date: "Sep 10th 2022, 1:26pm",
-    }]);
+    expect(score).toEqual([
+      {
+        category: "General Knowledge",
+        difficulty: "easy",
+        score: 7,
+        points: 120,
+        date: "Sep 10th 2022, 1:26pm",
+      },
+    ]);
   });
 });
 
@@ -817,18 +798,15 @@ describe("updateScore", function () {
     points: 140,
   };
 
-
-
   test("works", async function () {
     const score = await User.updateScore(newScore);
-    expect(score).toEqual(
-      {
-        category_id: 1,
-        difficulty_type: 1,
-        score: 7,
-        points: 140,
-        date: expect.any(Object),
-      });
+    expect(score).toEqual({
+      category_id: 1,
+      difficulty_type: 1,
+      score: 7,
+      points: 140,
+      date: expect.any(Object),
+    });
   });
 
   test("does not update for low score", async function () {
@@ -864,7 +842,6 @@ describe("updateScore", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-
 });
 
 /** getLeaderboardScores ============================================================= */
@@ -999,8 +976,7 @@ describe("updateLeaderboardScore", function () {
     );
   });
 
-  test("does not update for low score even though there is no leaderboard record", 
-  async function () {
+  test("does not update for low score even though there is no leaderboard record", async function () {
     const res = await User.updateLeaderboardScore(lowScore2);
     expect(res).toEqual(
       "Not updated as the new score is less than or equal to the old score."
@@ -1034,7 +1010,6 @@ describe("updateLeaderboardScore", function () {
     }
   });
 });
-
 
 /** SESSIONS========================================================================== */
 /** getSessions ====================================================================== */
@@ -1156,7 +1131,6 @@ describe("getSessions", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
-
 });
 
 /** addSession ====================================================================== */
@@ -1205,7 +1179,7 @@ describe("addSession", function () {
       difficulty_type: 1,
       score: 8,
       points: 150,
-      date: expect.any(Object)
+      date: expect.any(Object),
     });
   });
 
@@ -1265,7 +1239,6 @@ describe("deleteSession", function () {
   });
 });
 
-
 /** getPlayedCounts ================================================================== */
 
 describe("getPlayedCounts", function () {
@@ -1323,30 +1296,29 @@ describe("getPlayedCounts", function () {
   });
 
   test("works with both category and difficulty", async function () {
-    const playedCounts = await User.getPlayedCounts("u1", "General Knowledge", "easy");
+    const playedCounts = await User.getPlayedCounts(
+      "u1",
+      "General Knowledge",
+      "easy"
+    );
     expect(playedCounts).toEqual([
       {
         category: "General Knowledge",
         difficulty: "easy",
         played: 7,
-      }
+      },
     ]);
   });
 
   test("works with no played history", async function () {
-    const res = await User.getPlayedCounts(
-      "u2",
-      "General Knowledge",
-      "easy"
-    );
+    const res = await User.getPlayedCounts("u2", "General Knowledge", "easy");
     expect(res).toEqual({
       category: "General Knowledge",
       difficulty: "easy",
-      played: 0
+      played: 0,
     });
   });
 });
-
 
 /** updatePlayedCounts ================================================================= */
 

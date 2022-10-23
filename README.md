@@ -8,8 +8,8 @@ Trivia Guru is dedicated to people who would like to broaden their knowledge on 
 This website utilized resources from Open Trivia DB which offers over 4000 trivia questions in over 10 categories! This offsite offers tools that can track your statistics, personal best scores and recent played sessions in each category and difficulty.
 
 The tech stack of this project consists of 
-- Frontend - React, Reactstrap, Bootstrap, Noty,
-- Backend - NodeJS, PostgreSQL, Json Web Token, Bcrypt
+- Frontend - React, Reactstrap, Bootstrap, Noty
+- Backend - NodeJS, PostgreSQL, Json Web Token, Bcrypt, Moment, Json Schema, Nock
 
 #### Database Schema
 
@@ -44,7 +44,7 @@ Ensure that Git, Postgresql, NodeJS and NPM are already installed on your comput
 2. On your terminal, go to the directory that you just created
     * $ cd NAME_OF_DIRECTORY
 3. Git-clone and download the files from github:
-    * $ git clone git@github.com:christysnwong/trivia.git
+    * $ git clone https://github.com/christysnwong/trivia.git
 4. Navigate to the backend folder
 5. Install all the programs required for the backend by entering this on your terminal
     * $ npm install 
@@ -53,7 +53,7 @@ Ensure that Git, Postgresql, NodeJS and NPM are already installed on your comput
 7. Create the database on PostgreSQL, setup tables and seed sample data by typing
     * $ psql < trivia.sql
 8. To run the backend server on the local host (http://localhost:3001 for backend), type
-    * $ node server.js 
+    * $ npm start
 9. Navigate to the frontend folder
 10. Install all the programs required for the frontend by entering this on your terminal
     * $ npm install 
@@ -65,7 +65,7 @@ Ensure that Git, Postgresql, NodeJS and NPM are already installed on your comput
 
 1. To run test files on the backend, navigate to the backend folder
 2. Type the following command on your terminal:
-    * $ jest -i
+    * $ npm test
 3. To run test files on the frontend, navigate to the frontend folder
 4. Type the following command on your terminal:
     * $ npm test

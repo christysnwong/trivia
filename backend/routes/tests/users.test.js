@@ -1,4 +1,4 @@
-"use strict";
+("use strict");
 
 const request = require("supertest");
 
@@ -1792,7 +1792,7 @@ describe("GET /users/:username/playedcounts", function () {
   test("works for same user with query 1", async function () {
     const resp = await request(app)
       .get("/users/u1/playedcounts")
-      .query({category: "General Knowledge", difficulty: "easy"})
+      .query({ category: "General Knowledge", difficulty: "easy" })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
       playedCounts: [
@@ -1800,7 +1800,7 @@ describe("GET /users/:username/playedcounts", function () {
           category: "General Knowledge",
           difficulty: "easy",
           played: 1,
-        }
+        },
       ],
     });
   });
@@ -1812,10 +1812,10 @@ describe("GET /users/:username/playedcounts", function () {
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
       playedCounts: {
-          category: "General Knowledge",
-          difficulty: "hard",
-          played: 0,
-        },
+        category: "General Knowledge",
+        difficulty: "hard",
+        played: 0,
+      },
     });
   });
 

@@ -1,11 +1,11 @@
-"use strict";
+("use strict");
 
 const request = require("supertest");
 const app = require("../../app");
 const axios = require("axios");
 const nock = require("nock");
 
-jest.mock("../../helpers/shuffle"); 
+jest.mock("../../helpers/shuffle");
 const { shuffle } = require("../../helpers/shuffle");
 
 const getQuizData = async () => {
@@ -102,39 +102,36 @@ const mockQuizData = {
   ],
 };
 
-
 /** GET /quizzes ======================================================================= */
 
 describe("GET /quizzes", function () {
+  test("mock should intercept API request", async () => {
+    nock("https://opentdb.com")
+      .get("/api.php")
+      .query({ amount: 10, category: 9, difficulty: "easy" })
+      .reply(200, mockApiResp);
 
-    test("mock should intercept API request", async () => {
-      nock("https://opentdb.com")
-        .get("/api.php")
-        .query({ amount: 10, category: 9, difficulty: "easy" })
-        .reply(200, mockApiResp);
+    const resp = await getQuizData();
 
-      const resp = await getQuizData();
+    expect(resp).toEqual(mockApiResp);
 
-      expect(resp).toEqual(mockApiResp);
+    nock.cleanAll();
+  });
 
-      nock.cleanAll();
+  test("quizData should be correct", async () => {
+    nock("https://opentdb.com")
+      .get("/api.php")
+      .query({ amount: 10, category: 9, difficulty: "easy" })
+      .reply(200, mockApiResp);
 
-    });
+    shuffle.mockImplementation((arr) => arr);
 
-    test("quizData should be correct", async () => {
-      nock("https://opentdb.com")
-        .get("/api.php")
-        .query({ amount: 10, category: 9, difficulty: "easy" })
-        .reply(200, mockApiResp);
+    const resp = await request(app)
+      .get("/quizzes")
+      .query({ category: 9, difficulty: "easy" });
 
-      shuffle.mockImplementation(arr => arr);
+    expect(resp.body).toEqual(mockQuizData);
 
-      const resp = await request(app)
-        .get("/quizzes")
-        .query({ category: 9, difficulty: "easy" });
-
-      expect(resp.body).toEqual(mockQuizData);
-
-      nock.cleanAll();
-    });
+    nock.cleanAll();
+  });
 });
