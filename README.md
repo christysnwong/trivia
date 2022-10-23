@@ -1,5 +1,5 @@
 # Trivia Guru
-[Check it out here!](http://triviaguru.surge.sh/)
+[Check it out here!](https://triviaguru.surge.sh/)
 
 #### Introduction
 
