@@ -42,23 +42,38 @@ Ensure that Git, Postgresql, NodeJS and NPM are already installed on your comput
 
 1. Make a new directory for this project
 2. On your terminal, go to the directory that you just created
-    * $ cd NAME_OF_DIRECTORY
+
+    `$ cd NAME_OF_DIRECTORY`
+
 3. Git-clone and download the files from github:
-    * $ git clone https://github.com/christysnwong/trivia.git
+    
+    `$ git clone https://github.com/christysnwong/trivia.git`
+
 4. Navigate to the backend folder
 5. Install all the programs required for the backend by entering this on your terminal
-    * $ npm install 
+    
+    `$ npm install`
+
 6. Ensure that PostgreSQL is already up and running. If not, start it up by typing
-    * $ sudo service postgresql start 
+    
+    `$ sudo service postgresql start` 
+
 7. Create the database on PostgreSQL, setup tables and seed sample data by typing
-    * $ psql < trivia.sql
+    
+    `$ psql < trivia.sql`
+
 8. To run the backend server on the local host (http://localhost:3001 for backend), type
-    * $ npm start
+    
+    `$ npm start`
+
 9. Navigate to the frontend folder
 10. Install all the programs required for the frontend by entering this on your terminal
-    * $ npm install 
+    
+    `$ npm install` 
+
 11. To open the website on the local host (http://localhost:3000 for frontend), type 
-    * $ npm start
+    
+    `$ npm start`
 
 
 #### Testing
