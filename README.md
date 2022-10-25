@@ -80,7 +80,10 @@ Ensure that Git, Postgresql, NodeJS and NPM are already installed on your comput
 
 1. To run test files on the backend, navigate to the backend folder
 2. Type the following command on your terminal:
-    * $ npm test
+    
+    `$ npm test`
+
 3. To run test files on the frontend, navigate to the frontend folder
 4. Type the following command on your terminal:
-    * $ npm test
+    
+    `$ npm test`
