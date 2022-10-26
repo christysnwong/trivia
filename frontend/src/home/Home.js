@@ -74,10 +74,10 @@ const Home = () => {
 
           <div className="row mb-5">
             <p>
-              This website is designed for people who would like to broaden their
-              knowledge and have fun with Trivia. While anyone can take trivia
-              quizzes from different categories, only registered users can enjoy
-              all the features mentioned below.
+              This website is designed for people who would like to broaden
+              their knowledge and have fun with Trivia. While anyone can take
+              trivia quizzes from different categories, only registered users
+              can enjoy all the features mentioned below.
             </p>
             <p>
               Registration is free! Sign up now to experience the full features
@@ -112,8 +112,8 @@ const Home = () => {
 
                 <div className="card-body">
                   <p className="card-text">
-                    By signing up, you gain access to tools that can track your statistics,
-                    personal best scores and recent sessions in each
+                    By signing up, you gain access to tools that can track your
+                    statistics, personal best scores and recent sessions in each
                     category and difficulty. If your score is high enough, you
                     may make it to the leaderboard! Do quizzes to get points,
                     level up and earn badges!
@@ -256,7 +256,8 @@ const Home = () => {
             <div className="row mb-3">
               <p className="mb-4 mt-4">
                 The following table shows up to 5 of your most recent played
-                sessions.
+                sessions. The date and time displayed below are in UTC time
+                zone.
                 <br />
                 For more details, go to 'Recent Played Sessions' under 'My
                 Dashboard'.
