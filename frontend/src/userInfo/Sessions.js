@@ -28,7 +28,8 @@ const Sessions = () => {
       {sessions.length > 0 && (
         <>
           <p className="mb-4">
-            The following table shows your recent played sessions.
+            The following table shows your recent played sessions. The date and
+            time displayed below are in UTC time zone.
           </p>
 
           <Table entries={sessions} />

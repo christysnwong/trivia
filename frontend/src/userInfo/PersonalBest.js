@@ -18,7 +18,6 @@ const PersonalBest = () => {
 
   return (
     <div className="col-10 offset-1 col-lg-8 offset-lg-2 col-xxl-6 offset-xxl-3 col-xxxl-4 offset-xxxl-4">
-
       <h3 className="mb-5">
         <i className="fa-solid fa-trophy me-2"></i>
         Personal Best Scores
@@ -31,7 +30,7 @@ const PersonalBest = () => {
         <>
           <p className="mb-4">
             The following table shows your top score in each category and
-            difficulty.
+            difficulty. The date and time displayed below are in UTC time zone.
           </p>
 
           <Table entries={scores} />
