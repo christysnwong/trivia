@@ -19,6 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(authenticateJWT);
 
+app.use( (req,res,next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'Content-Type', 'Authorization');
+  next()
+});
+
 // routes
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
@@ -36,6 +43,7 @@ app.use(function (req, res, next) {
 /** Generic error handler; anything unhandled goes here. */
 app.use(function (err, req, res, next) {
   if (process.env.NODE_ENV !== "test") console.error(err.stack);
+  console.error(json.stringify())
   const status = err.status || 500;
   const message = err.message;
 
