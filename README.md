@@ -37,8 +37,7 @@ The tech stack of this project consists of
 
 #### Set up
 
-Prerequisites: This project requires the usage of database to run properly.
-Ensure that Git, Postgresql, NodeJS and NPM are already installed on your computer.
+Prerequisites: This project requires the usage of database to run properly. Ensure that Git, Postgresql, NodeJS, Jest and NPM are already installed on your computer.
 
 1. Make a new directory for this project
 2. On your terminal, go to the directory that you just created
