@@ -16,7 +16,7 @@ exports[`matches snapshot 1`] = `
     <p
       class="mb-3"
     >
-      The following table shows the top score in each category and difficulty. Your score appears in red if you make it to the leaderboard (limited to registered users only).
+      The following table shows the top score in each category and difficulty. The date and time displayed below are in UTC time zone. Your score appears in red if you make it to the leaderboard (limited to registered users only).
     </p>
     <p
       class="mb-4"

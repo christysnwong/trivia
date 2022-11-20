@@ -46,7 +46,7 @@ it("checks if results from TriviaApi.getScores are fetched and rendered", async 
   expect(await screen.findAllByText(/difficulty/i)).toHaveLength(2);
   expect(await screen.findByText(/points/i)).toBeInTheDocument();
   expect(await screen.findAllByText(70)).toHaveLength(3);
-  expect(await screen.findByText(/date/i)).toBeInTheDocument();
+  expect(await screen.findAllByText(/date/i)).toHaveLength(2);
 
   expect(await screen.findAllByText(/entertainment/i)).toHaveLength(3);
   expect(await screen.findAllByText(/film/i)).toHaveLength(2);
